@@ -25,7 +25,7 @@ DreamerAD 首次在隐空间而非像素空间完成自动驾驶 RL 训练，通
 
 作者发现 Video DiT（Epona）的去噪后 latent feature 具有极强的**空间结构和语义一致性**（见论文 Fig.2 PCA 可视化）。这意味着可以在隐空间而非像素空间做世界建模，同时保留解码出 RGB 帧做可解释性分析的能力。DreamerAD 正是建立在这个 observation 之上。
 
-![Figure 2: PCA visualization of denoised latent features](imgs/fig2_pca_visualization.png)
+![Figure 2: PCA visualization of denoised latent features](https://raw.githubusercontent.com/HzcIrving/SOTAFollow/main/WorldModel/imgs/fig2_pca_visualization.png)
 > **图 2**：PCA 可视化去噪 latent feature，展示强空间结构和语义一致性
 
 ### 2.3 Shortcut Forcing 的训练机制
@@ -66,7 +66,7 @@ DreamerAD 首次在隐空间而非像素空间完成自动驾驶 RL 训练，通
 
 DreamerAD = World Model with Latent Reward Modeling + Reinforcement Learning with Vocabulary Sampling
 
-![Figure 3: Overview of DreamerAD RL training architecture](imgs/fig3_architecture.png)
+![Figure 3: Overview of DreamerAD RL training architecture](https://raw.githubusercontent.com/HzcIrving/SOTAFollow/main/WorldModel/imgs/fig3_architecture.png)
 > **图 3**：DreamerAD RL 训练架构总览
 > - **Policy Generation and Sampling (黄色)**：从历史输入生成基线策略，基于预定义词表采样候选轨迹
 > - **RL Training via World Model (绿色)**：对采样轨迹执行隐空间 rollouts，想象未来状态。从 latent feature 解码 step-wise rewards 并聚合成时间感知的 dense reward
@@ -231,9 +231,9 @@ Clipped importance ratio：防止策略更新过大
 
 ### 5.3 定性结果
 
-![Figure 1: World model imagination training - scenario 1](imgs/fig1_scenario_curb.png)
-![Figure 1: World model imagination training - scenario 2](imgs/fig1_scenario_billboard.png)
-![Figure 1: World model imagination training - scenario 3](imgs/fig1_scenario_lamp.png)
+![Figure 1: World model imagination training - scenario 1](https://raw.githubusercontent.com/HzcIrving/SOTAFollow/main/WorldModel/imgs/fig1_scenario_curb.png)
+![Figure 1: World model imagination training - scenario 2](https://raw.githubusercontent.com/HzcIrving/SOTAFollow/main/WorldModel/imgs/fig1_scenario_billboard.png)
+![Figure 1: World model imagination training - scenario 3](https://raw.githubusercontent.com/HzcIrving/SOTAFollow/main/WorldModel/imgs/fig1_scenario_lamp.png)
 > **图 1**：世界模型想象训练引导的多样轨迹。每行展示一个驾驶场景，其中世界模型为候选轨迹想象未来结果。RGB 序列显示预测帧与 reward model 评分（红色：碰撞风险，绿色：安全）。BEV 图可视化轨迹：危险路径（左侧，红色高亮）vs 安全替代路径（右侧，绿色高亮）。
 
 SFT 轨迹存在与静止车辆碰撞（SFT 速度过高无法及时制动）和路沿剐蹭等问题。RL 训练后：
