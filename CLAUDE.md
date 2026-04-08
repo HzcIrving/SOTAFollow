@@ -21,7 +21,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 │   └── self-improving-agent/
 ├── AgentMemResearch/      # (预留目录)
 ├── claudefollow/          # (预留目录)
-└── contents.md           # 论文目录索引（主索引）
+└── README.md              # 论文目录索引（主索引）
 ```
 
 ## 工作流程
@@ -29,9 +29,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 当用户提供论文进行阅读时：
 1. 根据论文主题分类到对应目录（RL/VLA/WorldModel）
 2. 使用 Markdown 文件保存论文摘要/笔记，命名格式：`{论文名}-论文{类型}.md`
-3. 更新 `contents.md` 中的论文索引表
+3. 更新 `README.md` 中的论文索引表
 
-contents.md 是全局索引，包含：论文名、会议/年份、核心贡献、文档链接。
+README.md 是全局索引，包含：论文名、会议/年份、核心贡献、文档链接。
 
 ## 日报功能
 
