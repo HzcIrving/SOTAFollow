@@ -14,7 +14,12 @@
       "Bash(git remote:*)",
       "Bash(git branch:*)",
       "Bash(git push:*)",
-      "Bash(curl -sL \"https://arxiv.org/abs/2603.24587\")"
+      "Bash(curl -sL \"https://arxiv.org/abs/2603.24587\")",
+      "Bash(ssh-keygen -R github.com)",
+      "Bash(ssh-keyscan github.com)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 10 \"https://cdn.jsdelivr.net/gh/HzcIrving/SOTAFollow@9a52a03/WorldModel/imgs/fig3_architecture.png\")",
+      "Bash(curl -fsSL https://skillhub.cn/install/skillhub.md)",
+      "Bash(bash -s -- --cli-only)"
     ]
   }
 }
