@@ -14,6 +14,8 @@
 
 LeWorldModel (LeWM) 提出了首个仅用**两个 loss 项**即可稳定端到端训练的 JEPA（联合嵌入预测架构），用 SIGReg 正则器替代复杂的抗崩溃机制，在 ~15M 参数下单 GPU 数小时完成训练，规划速度比基础模型世界模型快 **48 倍**，同时在 2D/3D 控制任务上达到具身智能 SOTA。
 
+![LeWorldModel Overview](https://arxiv.org/html/2603.19312v1/x1.png)
+
 ---
 
 ## 2. 核心贡献
@@ -116,6 +118,8 @@ VinePPG 需要预训练+冻结编码器，LeWM 的 SIGReg 可端到端优化。
     ↓
 [SIGReg 正则器]  → 强制高斯分布
 ```
+
+![LeWorldModel Architecture](https://arxiv.org/html/2603.19312v1/x2.png)
 
 **关键设计决策：**
 
@@ -220,7 +224,9 @@ def plan_with_lewm(encoder, predictor, current_obs, num_samples=1000):
 
 ## 6. 实验结论
 
-### 5.1 主要实验结果
+![LeWorldModel Experiments](https://arxiv.org/html/2603.19312v1/x3.png)
+
+### 6.1 主要实验结果
 
 #### 5.1.1 2D 机械臂操控（Push-T）
 
@@ -267,9 +273,11 @@ def plan_with_lewm(encoder, predictor, current_obs, num_samples=1000):
 
 LeWM 实现了 48 倍规划加速，源于轻量级架构（15M vs 基础模型规模）。
 
-### 5.2 消融实验
+### 6.2 消融实验
 
-#### 5.2.1 SIGReg 投影数量的影响
+![LeWorldModel Ablations](https://arxiv.org/html/2603.19312v1/x6.png)
+
+#### 6.2.1 SIGReg 投影数量的影响
 
 | M | SIGReg 值 | 任务性能 |
 |---|----------|---------|
