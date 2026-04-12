@@ -218,7 +218,7 @@ $$\mathcal{L} = \mathcal{L}_{\text{act}} + \lambda \mathcal{L}_{\text{vid}}$$
 | Fast-WAM w/o video co-train | ✗ | 82.76 | 84.80 | **83.8** |
 
 **关键洞察**：
-- Fast-WAM **无需具身预训练即达 91.8%**，超越所有带具身预训练的 baseline（除 LingBot-VA）
+- Fast-WAM **无需具身预训练即达 91.8%**，与带具身预训练的 baseline 相当
 - Fast-WAM vs Joint/IDM 差异微小（~1%），但 **移除 video co-training 下降 8%**（91.8% → 83.8%）
 
 #### 5.1.2 LIBERO（4个子任务套件）
@@ -229,6 +229,9 @@ $$\mathcal{L} = \mathcal{L}_{\text{act}} + \lambda \mathcal{L}_{\text{vid}}$$
 |------|---------|--------|------|------|---------|
 | OpenVLA | 84.7 | 88.4 | 79.2 | 53.7 | 76.5 |
 | π₀ | 96.8 | 98.8 | 95.8 | 85.2 | 94.1 |
+| π₀.₅ | 98.8 | 98.2 | 98.0 | 92.4 | 96.9 |
+| Motus | 96.8 | 99.8 | 96.6 | 97.6 | 97.7 |
+| LingBot-VA | 98.5 | 99.6 | 97.2 | 98.5 | 98.5 |
 | **Fast-WAM (Ours)** | **98.2** | **100.0** | **97.0** | **95.2** | **97.6** |
 | Fast-WAM-Joint | 99.6 | 99.4 | 98.2 | 96.8 | 98.5 |
 | Fast-WAM-IDM | 98.8 | 97.8 | 97.8 | 97.6 | 98.0 |
@@ -263,7 +266,7 @@ $$\mathcal{L} = \mathcal{L}_{\text{act}} + \lambda \mathcal{L}_{\text{vid}}$$
 **关键发现**：
 - 移除 video co-training：**仅 10% 成功率** + 最长完成时间（~120s）
 - 差距远大于三种 variant 之间的差异
-- **推理延迟**：Fast-WAM **190ms**，Fast-WAM-IDM **810ms**（4x 差距）
+- **推理延迟**：Fast-WAM **190ms**，imagine-then-execute WAMs **>760ms**（4x+ 差距）
 
 ### 5.3 受控实验结论
 
