@@ -1,2 +1,5 @@
 .DS_Store
 skills/
+.claude/*
+lark_bot_state.json
+check_lark_messages.py
