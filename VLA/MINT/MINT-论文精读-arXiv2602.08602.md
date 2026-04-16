@@ -373,10 +373,10 @@ $$
 ### 图 1：SDAT 频域解纠缠机制
 
 > **来源**：论文 Figure 1（Teaser），作者项目主页
-> **URL**：https://renming-huang.github.io/MINT/static/images/teaser.png
+> **URL**：https://raw.githubusercontent.com/HzcIrving/SOTAFollow/main/VLA/MINT/imgs/fig1_sdat_teaser.png
 > **对应章节**：§5.2（SDAT 方法详解）
 
-![Figure 1: SDAT — Spectrally Disentangled Action Tokenizer](https://renming-huang.github.io/MINT/static/images/teaser.png)
+![Figure 1: SDAT — Spectrally Disentangled Action Tokenizer](https://raw.githubusercontent.com/HzcIrving/SOTAFollow/main/VLA/MINT/imgs/fig1_sdat_teaser.png)
 
 > **图注**：（左）SDAT 整体流程——动作序列经编码器压缩后，通过多尺度残差量化分解为 S₁（Intent Token）和 S₂~Sₖ（Execution Tokens），各尺度在频域中承担不同职责；（右）频谱分离可视化——低频（蓝色曲线）捕捉全局行为形状（意图），高频（红色曲线）编码局部执行细节。S₁ 在频域中天然对应最低频分量，这从信号层面验证了 Intent/Execution 分离的物理合理性。
 
@@ -385,10 +385,10 @@ $$
 ### 图 2：MINT Policy 推理流程
 
 > **来源**：论文 Figure 2（Policy Overview），作者项目主页
-> **URL**：https://renming-huang.github.io/MINT/static/images/overview.jpg
+> **URL**：https://raw.githubusercontent.com/HzcIrving/SOTAFollow/main/VLA/MINT/imgs/fig2_mint_overview.jpg
 > **对应章节**：§5.4（MINT Policy）
 
-![Figure 2: MINT Policy Overview](https://renming-huang.github.io/MINT/static/images/overview.jpg)
+![Figure 2: MINT Policy Overview](https://raw.githubusercontent.com/HzcIrving/SOTAFollow/main/VLA/MINT/imgs/fig2_mint_overview.jpg)
 
 > **图注**：MINT Policy 核心流程。（左）Next-Scale 自回归推理——视觉-语言编码后，Action Expert 先预测 Intent Token（S₁），再并行预测 Execution Tokens（S₂~Sₖ），最后 SDAT 解码器将所有 tokens 解码为连续动作轨迹。（右）基于 Intent 的动作集成（Intent Ensemble）——对多个时间步的预测动作按 Intent Token 相似度加权聚合，增强长程时序一致性。
 
