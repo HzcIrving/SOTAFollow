@@ -370,143 +370,84 @@ $$
 
 ## 六、算法框架图（图文并茂）
 
-### 图 1：SDAT 频域解纠缠机制（左）+ 频谱分离效果（右）
+### 图 1：SDAT 频域解纠缠机制
 
-> **来源**：论文 Figure 1（ teaser）
-> **URL**：https://arxiv.org/html/2602.08602v3#fig:teaser
-> **对应章节**：§5.2（方法详解 - SDAT）
+> **来源**：论文 Figure 1（Teaser），作者项目主页
+> **URL**：https://renming-huang.github.io/MINT/static/images/teaser.png
+> **对应章节**：§5.2（SDAT 方法详解）
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│  SDAT: Spectrally Disentangled Action Tokenizer              │
-│                                                              │
-│  输入: 动作序列 A ∈ R^(H×D)                                  │
-│         ↓                                                    │
-│  [动作编码器 E] → f ∈ R^(L×C)                                │
-│         ↓                                                    │
-│  ┌────────────────────────────────────────────┐             │
-│  │ 多尺度残差量化（Multi-Scale Res Q）            │             │
-│  │                                             │             │
-│  │  Scale 1: S₁ (Intent) ──┐                   │             │
-│  │  Scale 2: S₂ (Execution)─┼→ 共享码书 Z     │             │
-│  │  Scale 3: S₃ (Execution)─┤                 │             │
-│  │  ...                    │                   │             │
-│  │  Scale K: Sₖ (Execution)─┘                   │             │
-│  └────────────────────────────────────────────┘             │
-│         ↓                                                    │
-│  [频域解码器 D_spec] → DCT → F^(k)                           │
-│         ↓                                                    │
-│  Scale-wise Spectral Loss: Σ λ_k ||F - F^(k)||₂            │
-│         ↓                                                    │
-│  输出: Intent Token (S₁) + Execution Tokens (S₂~Sₖ)        │
-└──────────────────────────────────────────────────────────────┘
+![Figure 1: SDAT — Spectrally Disentangled Action Tokenizer](https://renming-huang.github.io/MINT/static/images/teaser.png)
 
-频谱分离示意图（对应论文 Fig.1 右）：
-频率
-  高 │ ════════════════════════════════════════
-     │         Sₖ (高频残余 → 执行细节)
-     │
-     │      ══════════════════════════════════
-     │              S₃
-     │
-     │   ══════════════════════════════════════
-     │          S₂
-     │
-  低 │ ████████████████████████████████████████
-     └──────────────────────────────────────────→ 时间
-           S₁ (低频主导 → 全局意图/行为形状)
-```
-
-> **图注**：SDAT 通过 DCT 将动作从时间域变换到频率域，然后约束每个尺度的 token 必须对特定频段负责。S₁ 只用低频信息重建轨迹，因此天然编码全局行为意图；S₂~Sₖ 则专注于高频残差，即局部执行细节。右图展示频谱分解效果：低频（蓝色）对应全局行为轨迹，高频（红色）对应局部细节。
+> **图注**：（左）SDAT 整体流程——动作序列经编码器压缩后，通过多尺度残差量化分解为 S₁（Intent Token）和 S₂~Sₖ（Execution Tokens），各尺度在频域中承担不同职责；（右）频谱分离可视化——低频（蓝色曲线）捕捉全局行为形状（意图），高频（红色曲线）编码局部执行细节。S₁ 在频域中天然对应最低频分量，这从信号层面验证了 Intent/Execution 分离的物理合理性。
 
 ---
 
 ### 图 2：MINT Policy 推理流程
 
-> **来源**：论文 Figure 2
-> **URL**：https://arxiv.org/html/2602.08602v3#S1.F2
+> **来源**：论文 Figure 2（Policy Overview），作者项目主页
+> **URL**：https://renming-huang.github.io/MINT/static/images/overview.jpg
 > **对应章节**：§5.4（MINT Policy）
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    MINT Policy 推理流程                       │
-│                                                              │
-│  输入: 视觉观测 + 语言指令 + 机器人本体状态                    │
-│         ↓                                                    │
-│  [视觉-语言主干网络 (ViT + LLM)] → F_vl                      │
-│  [本体感知编码器] → F_p                                       │
-│         ↓                                                    │
-│  条件融合: F = concat(F_vl, F_p)                            │
-│         ↓                                                    │
-│  ┌─────────────────────────────────────────────┐           │
-│  │ Next-Scale 自回归动作专家                      │           │
-│  │                                              │           │
-│  │  Step 1: 预测 S₁ (Intent Token)             │           │
-│  │           ↓                                  │           │
-│  │  Step 2: 并行预测 S₂, S₃, ..., Sₖ          │           │
-│  │           (Execution Tokens)                 │           │
-│  │           ↓                                  │           │
-│  │  S₁ + S₂ + ... + Sₖ → 动作 tokens          │           │
-│  └─────────────────────────────────────────────┘           │
-│         ↓                                                    │
-│  [SDAT 解码器] → 连续动作轨迹                                │
-│         ↓                                                    │
-│  输出: 机械臂控制命令                                         │
-└─────────────────────────────────────────────────────────────┘
+![Figure 2: MINT Policy Overview](https://renming-huang.github.io/MINT/static/images/overview.jpg)
 
-Intent Ensemble（右侧分支）：
-  多个时间步的 Intent Token → 计算相似度权重 → 加权聚合动作
-  → 增强长程时序一致性
-```
-
-> **图注**：(a) Next-Scale 自回归推理——先预测全局 Intent Token（S₁），再逐步生成 Execution Tokens，实现从"全局规划"到"精细执行"的递进推理。(b) 基于 Intent 的动作集成，通过计算相邻时间步 Intent Token 的相似度，动态调整融合权重，增强长程任务的行为一致性。
+> **图注**：MINT Policy 核心流程。（左）Next-Scale 自回归推理——视觉-语言编码后，Action Expert 先预测 Intent Token（S₁），再并行预测 Execution Tokens（S₂~Sₖ），最后 SDAT 解码器将所有 tokens 解码为连续动作轨迹。（右）基于 Intent 的动作集成（Intent Ensemble）——对多个时间步的预测动作按 Intent Token 相似度加权聚合，增强长程时序一致性。
 
 ---
 
 ### 图 3：One-Shot 迁移评估
 
-> **来源**：论文 Figure 3
-> **URL**：https://arxiv.org/html/2602.08602v3#S6.F3
+> **来源**：论文 Figure 3（对应原文 Fig. 3）
 > **对应章节**：§7.3（One-Shot Transfer 实验）
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  One-Shot Transfer via Intent Token Injection                │
-│                                                              │
-│  新任务布局                新任务语义               扩展视野  │
-│  ┌──────────┐          ┌──────────┐          ┌──────────┐    │
-│  │  已知任务  │          │ 未知任务  │          │  已知任务  │    │
-│  │  新布局   │          │  新布局   │          │  更长Horizon│  │
-│  │          │          │          │          │          │    │
-│  │ Intent   │          │ Intent   │          │ Intent   │    │
-│  │ Token ✓  │          │ Token ✓  │          │ Token ✓  │    │
-│  └──────────┘          └──────────┘          └──────────┘    │
-│                                                              │
-│  只需从单条演示中提取 S₁（Intent Token），注入 Policy 即可     │
-│  无需梯度更新，无需语言描述                                   │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│           One-Shot Transfer via Intent Token Injection             │
+│                                                                   │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐    │
+│  │   New Layout    │  │   New Task     │  │Extended Horizon│    │
+│  │   (已知任务     │  │  (全新任务     │  │ (更长动作      │    │
+│  │    新布局)       │  │   新语义)       │  │   序列)         │    │
+│  │                 │  │                 │  │                │    │
+│  │ Intent Token ✓  │  │ Intent Token ✓  │  │Intent Token ✓ │    │
+│  │   68% success   │  │   90% success   │  │   72% success  │    │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘    │
+│                                                                   │
+│  基线对比：Fine-tune(Language) → 42% / 8% / 0%                    │
+│  Intent Injection → 90% / 68% / 72%（平均 77%）                    │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-> **图注**：三种 OOD 迁移设置：(1) New Layout——任务语义已知但物体位置新；(2) New Task——全新任务语义；(3) Extended Horizon——需要比演示更长的动作序列。右表数据：Intent-injection 在所有三项上大幅领先语言微调。
+> **图注**：One-Shot 迁移的三种 OOD 场景——New Layout（新布局）、New Task（新任务语义）、Extended Horizon（更长动作序列）。只需从单条演示中提取 S₁（Intent Token）注入 Policy，无需梯度更新。Intent Injection 在所有三项上大幅领先语言微调（平均 77% vs 17%），验证了意图作为跨任务迁移核心载体的有效性。
 
 ---
 
-### 图 4 & 5：真机实验
+### 图 4 & 5：真机实验 Setup 与结果
 
-> **来源**：论文 Figure 4 & 5
-> **URL**：https://arxiv.org/html/2602.08602v3#S6.F4
+> **来源**：论文 Figure 4 & 5（对应原文 Fig. 4、Fig. 5）
 > **对应章节**：§7.4（真机实验）
 
-真机实验在 6-DOF Piper-X 机械臂上进行，RGB 双相机输入：
+真机实验在 **6-DOF Piper-X 机械臂 + RGB 双相机**条件下进行，4 项任务：
 
-| 任务 | 基线 ACT | 基线 π0 | 基线 π0.5* | **MINT-4B** |
-|------|---------|---------|------------|-------------|
-| (A) Place Banana（seen） | 低 | 中 | 高 | **最高 ✓** |
-| (B) Stack Blocks（seen） | 低 | 中 | 高 | **显著领先 ✓** |
-| (C) Insert Marker（seen） | 低 | 中 | 高 | **最高 ✓** |
-| (D) Stack Cups（unseen） | — | — | — | **显著超越基线 ✓** |
+| 任务 | 类型 | ACT | π0 | π0.5* | **MINT-4B** |
+|------|------|-----|-----|--------|------------|
+| (A) Place Banana | seen | 低 | 中 | 高 | **最高 ✓** |
+| (B) Stack Blocks | seen | 低 | 中 | 高 | **显著领先 ✓** |
+| (C) Insert Marker | seen | 低 | 中 | 高 | **最高 ✓** |
+| (D) Stack Cups | **unseen** | — | — | — | **显著超越 ✓** |
 
-> **图注**：MINT-4B 在未见任务（Stack Cups）上从"堆积"意图泛化，有效超越过拟合特定物体的基线。
+```
+实验场景示意图（Piper-X 6-DOF 机械臂）：
+  ┌─────────────────────────────┐
+  │    相机图像 (RGB 双视角)     │
+  │         ↓                   │
+  │   MINT-4B Policy           │
+  │   S₁(Intent) + S₂~Sₖ      │
+  │         ↓                   │
+  │   机械臂执行动作             │
+  └─────────────────────────────┘
+```
+
+> **图注**：MINT-4B 在 (B) Stack Blocks（高精度轴对齐）上显著领先 π0.5*，体现 Intent 对空间约束精确执行的价值。在未见任务 (D) Stack Cups 上，MINT 成功从任务 (B) 的"堆积"意图泛化，有效超越过拟合特定物体的所有基线。
 
 ---
 
