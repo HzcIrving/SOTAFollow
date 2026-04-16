@@ -198,8 +198,6 @@ $$\mathcal{L} = \mathcal{L}_{\text{act}} + \lambda \mathcal{L}_{\text{vid}}$$
 
 ## 5. 实验结果
 
-![Fast-WAM Experiments](https://arxiv.org/html/2603.16666v2/x3.png)
-
 ### 5.1 仿真基准测试
 
 #### 5.1.1 RoboTwin 2.0（双臂操控）
@@ -243,11 +241,13 @@ $$\mathcal{L} = \mathcal{L}_{\text{act}} + \lambda \mathcal{L}_{\text{vid}}$$
 
 ### 5.2 真实世界：毛巾折叠任务
 
-![Fast-WAM Real-World Experiments](https://arxiv.org/html/2603.16666v2/x4.png)
+![Fast-WAM 毛巾折叠任务](https://arxiv.org/html/2603.16666v2/x3.png)
 
-**图4：真实世界毛巾折叠任务结果**
+> **图3**：真实世界毛巾折叠任务 - Galaxea R1 Lite 平台上折叠柔性物体，需要长期规划和精确闭环操控。
 
-![Fast-WAM Real-World Experiments](https://arxiv.org/html/2603.16666v2/x4.png)
+![Fast-WAM 真实世界结果](https://arxiv.org/html/2603.16666v2/x4.png)
+
+> **图4**：真实世界毛巾折叠任务结果。左图：成功率 vs 平均完成时间（越左上越好）；右图：推理延迟对比。Fast-WAM 以显著更低的延迟达到强性能，同时移除 video co-training 会导致成功率和完成时间都下降。
 
 **关键发现**（论文原文描述）：
 - **π₀.₅**（具身预训练）：最高成功率 + 最短完成时间

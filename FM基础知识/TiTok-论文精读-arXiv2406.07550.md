@@ -601,51 +601,45 @@ if __name__ == "__main__":
 
 ### Figure 1 - 核心思想图
 
-![Figure 1: TiTok Teaser](./titok_figures/titok_teaser.png)
+![Figure 1: TiTok Teaser](https://arxiv.org/html/2406.07550v1/x1.png)
 
-*图注：TiTok 核心思想——用仅 32 个 Token 就能表示高分辨率图像进行重建和生成。256×256 图像从传统方法的 256 个 tokens 压缩到 TiTok 的 32 个 tokens（减少 8×），512×512 图像从 1024 tokens 压缩到 64 tokens（减少 16×），同时保持甚至超越原有生成质量。*
+> **图1**：TiTok 核心思想——用仅 32 个 Token 就能表示高分辨率图像进行重建和生成。256×256 图像从传统方法的 256 个 tokens 压缩到 TiTok 的 32 个 tokens（减少 8×），512×512 图像从 1024 tokens 压缩到 64 tokens（减少 16×），同时保持甚至超越原有生成质量。
 
 ### Figure 2 - 速度-质量权衡图
 
-![Figure 2: Speed vs Performance](./titok_figures/speed_vs_perf.png)
+![Figure 2: Speed vs Performance](https://arxiv.org/html/2406.07550v1/x2.png)
 
-*图注：TiTok 与 prior arts 在 ImageNet 256×256 和 512×512 上的质量和速度对比。横轴为 gFID（越低越好），纵轴为采样吞吐量（越高越好）。TiTok 位于右上角（又快又好），显著优于 DiT-XL/2 和其他方法。TiTok-L-32 在 256² 上比 DiT-XL/2 快 169 倍（101.6 vs 0.6 samples/s），TiTok-B-128 在 512² 上比 DiT-XL/2 快 74 倍（33.3 vs 0.45 samples/s）。*
+> **图2**：TiTok 与 prior arts 在 ImageNet 256×256 和 512×512 上的质量和速度对比。横轴为 gFID（越低越好），纵轴为采样吞吐量（越高越好）。TiTok 位于右上角（又快又好），显著优于 DiT-XL/2。TiTok-L-32 在 256² 上比 DiT-XL/2 快 169 倍（101.6 vs 0.6 samples/s），TiTok-B-128 在 512² 上快 74 倍（33.3 vs 0.45 samples/s）。
 
 ### Figure 3 - 完整框架图
 
-![Figure 3: TiTok Framework](./titok_figures/titok_framework.png)
+![Figure 3: TiTok Framework](https://arxiv.org/html/2406.07550v1/x3.png)
 
-*图注：(a) 图像重建流程：图像 patchify 后与 K 个可学习 Latent Tokens 拼接 → ViT Encoder → Vector Quantizer → 量化后的 tokens 与 Mask Tokens 拼接 → ViT Decoder → 重建图像。(b) 图像生成流程（MaskGIT）：双向 Transformer 逐步预测 masked tokens。(c) TiTok 整体架构，Encoder 和 Decoder 都是标准 ViT，核心创新在于 Latent Tokens 的设计和 1D 序列表示。*
+> **图3**：TiTok 整体框架。(a) 图像 Tokenization 流程：patchify → ViT Encoder → Vector Quantizer → 量化 tokens → ViT Decoder → 重建图像。(b) 图像生成流程（MaskGIT）：双向 Transformer 逐步预测 masked tokens。(c) TiTok 架构细节，核心创新在于 K 个可学习 Latent Tokens 替代 2D Grid。
 
 ### Figure 4 - 综合消融实验
 
-![Figure 4: Preliminary Experiments](./titok_figures/preliminary.png)
+![Figure 4: Preliminary Experiments](https://arxiv.org/html/2406.07550v1/x4.png)
 
-*图注：Figure 4 综合消融实验展示了不同 TiTok 变体在 ImageNet 上的 (a) 重建性能、(b) 线性探测分类性能、(c) 生成性能、(d) 训练/推理吞吐量。关键发现：K=32 对 TiTok-L 足够有效（rFID 6.6 ≈ VQGAN-256 的性能），更少的 tokens 学到更高级的语义表征（K 越小线性分类准确率越高），K=32 相比 K=256 训练速度快 12.8×。详细数据见 Appendix Table 4。*
+> **图4**：综合消融实验展示了不同 TiTok 变体在 ImageNet 上的 (a) 重建性能、(b) 线性探测分类性能、(c) 生成性能、(d) 训练/推理吞吐量。关键发现：K=32 对 TiTok-L 足够有效（rFID 6.6 ≈ VQGAN-256 的性能），更少的 tokens 学到更高级的语义表征。
 
-### Figure 5 - 256² 实验结果（Appendix）
+### Figure 5 - Token 数与模型规模分析
 
-![Figure 5: 256×256 Results](./titok_figures/exp_256.png)
+![Figure 5: Token and Model Analysis](https://arxiv.org/html/2406.07550v1/x5.png)
 
-*图注：ImageNet 256×256 生成样例对比。TiTok-S-128（gFID 1.97）生成的图像在视觉质量上与 DiT-XL/2（gFID 2.27）相当，但生成速度快 13×。*
+> **图5**：Token 数与模型规模对重建质量的影响。TiTok-L 用 K=32 就能达到与其他模型 K=64-128 相当的重建质量，更大的模型可以在更少的 tokens 下达到相同性能——这是 TiTok 的 scaling law。
 
-### Figure 6 - 512² 实验结果（Appendix）
+### Figure 6 - ImageNet 生成结果
 
-![Figure 6: 512×512 Results](./titok_figures/exp_512.png)
+![Figure 6: ImageNet Generation](https://arxiv.org/html/2406.07550v1/x6.png)
 
-*图注：ImageNet 512×512 生成样例。TiTok-B-128（gFID 2.13）显著超越 DiT-XL/2（gFID 3.04），同时速度快 74×。即使在高分辨率下，TiTok 依然能保持紧凑的 latent 表示（128 tokens vs VQGAN 的 1024 tokens）。*
+> **图6**：ImageNet 256×256 和 512×512 生成样例。TiTok-S-128（gFID 1.97）生成的图像在视觉质量上与 DiT-XL/2（gFID 2.27）相当，但生成速度快 13×。
 
-### Figure 7 - 重建质量分析（Appendix）
+### Figure 7 - 消融实验详解
 
-![Figure 7: Reconstruction Analysis](./titok_figures/recon_w_model_size_num_token.png)
+![Figure 7: Ablation Studies](https://arxiv.org/html/2406.07550v1/x7.png)
 
-*图注：重建质量随模型规模和 Token 数的变化曲线。横轴为 Token 数（K=16 到 K=256），三条曲线分别代表 TiTok-S、TiTok-B、TiTok-L。观察到：1) K≥128 后收益边际递减；2) TiTok-L 用 K=32 就能达到与其他模型 K=64-128 相当的重建质量；3) 更大的模型可以在更少的 tokens 下达到相同性能——这是 TiTok 的 scaling law。*
-
-### Figure 8 - 随机生成样例（Appendix）
-
-![Figure 8: Random Generation](./titok_figures/random_vis_l32.png)
-
-*图注：TiTok-L-32（K=32）在 ImageNet 上的随机生成样例。展示了 32 个离散 tokens 足以生成多样化的、高质量的图像，覆盖动物、交通工具、人物等多个类别。FID 达到 2.77，验证了极紧凑 latent 表示的有效性。*
+> **图7**：TiTok 消融实验，包括 (a) Tokenizer 设计消融、(b) Masking Schedule 消融、(c) 训练范式消融。每一步改进都有显著提升：增大 codebook 减少量化误差，更长训练让模型充分收敛，Decoder Fine-tuning 是最关键一步（将 rFID 从 5.48 降到 2.21）。
 
 ---
 

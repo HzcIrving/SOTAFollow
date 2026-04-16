@@ -25,8 +25,9 @@
 
 ## 3. 拟人化开篇
 
-![图 1：论文 Teaser — 同一场景多条轨迹跟随不同指令](assets/vega_fig1_teaser.jpeg)
-> **图 1**：同一场景下，给定不同指令（"Pull up to the side"、"Follow the car straight through the intersection"、"Goal along the road and pass the orange traffic barrier"、"Stop at the crosswalk, wait for the light to turn green"），Vega 能预测出完全不同的多条轨迹。（对应第 3 章）
+![图 1：Vega 指令跟随驾驶可视化](https://arxiv.org/html/2603.25741v1/x1.png)
+
+> **图 1**：Vega 论文 Teaser — 同一场景多条轨迹跟随不同指令。给定不同指令（"Pull up to the side"、"Follow the car straight through the intersection"、"Goal along the road and pass the orange traffic barrier"、"Stop at the crosswalk, wait for the light to turn green"），Vega 能预测出完全不同的多条轨迹。
 
 
 想象你坐在副驾驶，对司机说："**前面那辆车开得太慢了，超它然后赶下一个绿灯**"。一个普通司机听完会心领神会，果断变道加速——而老司机甚至能预判超车后前方路况会变成什么样。
@@ -85,8 +86,9 @@ Vega 是一个**统一的自回归-扩散混合架构**，命名为 **Vision-Lan
 - **Joint Attention** → 跨模态深度交互
 
 
-![图 2：模型总览 — 传统模仿驾驶 vs Vega](assets/vega_fig2_overview.jpeg)
-> **图 2**：Vega 的整体框架图，左侧展示传统模仿驾驶模型（单一专家轨迹 + 导航命令），右侧展示 Vega（多模态指令 + 个性化轨迹 + 世界建模）。Vega 同时输出动作规划和未来图像预测，实现真正的指令跟随。（对应第 5.1 节）
+![图 2：Vega 模型总览](https://arxiv.org/html/2603.25741v1/x2.png)
+
+> **图 2**：Vega 的整体框架图，左侧展示传统模仿驾驶模型（单一专家轨迹 + 导航命令），右侧展示 Vega（多模态指令 + 个性化轨迹 + 世界建模）。Vega 同时输出动作规划和未来图像预测，实现真正的指令跟随。
 
 ### 5.2 输入编码
 
@@ -125,8 +127,10 @@ S = [I_{t-T}, ..., I_t,  L_t,  A_t^{noisy}]
 - 从所有后续 token 遮蔽 Copy 1，确保它们只 attend to clean latents
 
 ### 5.4 Mixture-of-Transformers (MoT) 架构
-![图 3：MoT 架构框架](assets/vega_fig3_framework.jpeg)
-> **图 3**：Vega 的核心框架图，展示了多模态输入（Vision → VAE、Text → Qwen2.5 Tokenizer、Action → Linear）如何通过 Causal Attention 机制与 Understanding Transformer、Generation Transformer、Action Expert 三类模块交互，最终输出 Planning（动作规划）和 Generation（未来图像生成）。（对应第 5.4 节）
+
+![图 3：Vega 统一 VLA 框架](https://arxiv.org/html/2603.25741v1/x3.png)
+
+> **图 3**：Vega 的核心框架图，展示了多模态输入（Vision → VAE、Text → Qwen2.5 Tokenizer、Action → Linear）如何通过 Causal Attention 机制与 Understanding Transformer、Generation Transformer、Action Expert 三类模块交互，最终输出 Planning（动作规划）和 Generation（未来图像生成）。
 
 
 
@@ -219,13 +223,17 @@ $$\mathcal{L} = \lambda_A \cdot \mathcal{L}_A + \lambda_V \cdot \mathcal{L}_V, \
 ## 7. 可视化与消融实验
 
 ### 7.1 指令跟随可视化
-![图 5：指令跟随规划可视化](assets/vega_fig5_planning.jpeg)
-> **图 5**：展示了两个场景（Scene 1 和 Scene 2）中，不同指令对车辆规划轨迹的影响。每个场景包含前视相机图像（上排）和对应的 BEV 地图（下排）。三条指令分别产生三条不同轨迹，验证了 Vega 对自然语言指令的精确理解和执行能力。（对应第 7.1 节）
+
+![图 5：指令跟随规划示例](https://arxiv.org/html/2603.25741v1/x5.png)
+
+> **图 5**：展示了两个场景（Scene 1 和 Scene 2）中，不同指令对车辆规划轨迹的影响。每个场景包含前视相机图像（上排）和对应的 BEV 地图（下排）。三条指令分别产生三条不同轨迹，验证了 Vega 对自然语言指令的精确理解和执行能力。
 
 
 ### 7.2 未来图像生成可视化
-![图 6：未来图像生成 — 条件于指令和动作](assets/vega_fig6_future_gen.jpeg)
-> **图 6**：同一场景下，给定三组不同指令，Vega 规划出三条不同的动作序列，并生成对应的高保真未来图像。所有动作序列都严格遵循各自指令，所有生成的未来图像都与对应动作保持时序一致性。（对应第 7.2 节）
+
+![图 6：未来图像生成](https://arxiv.org/html/2603.25741v1/x6.png)
+
+> **图 6**：同一场景下，给定三组不同指令，Vega 规划出三条不同的动作序列，并生成对应的高保真未来图像。所有动作序列都严格遵循各自指令，所有生成的未来图像都与对应动作保持时序一致性。
 
 
 ### 7.3 未来帧预测的消融（表 3）
@@ -240,7 +248,9 @@ $$\mathcal{L} = \lambda_A \cdot \mathcal{L}_A + \lambda_V \cdot \mathcal{L}_V, \
 
 ### 7.4 交错图像-动作序列的消融
 
-- **初始阶段**：交错序列模型 loss 更高（因训练设计差异）
+![图 4：交错序列消融实验](https://arxiv.org/html/2603.25741v1/x4.png)
+
+> **图 4**：交错图像-动作序列设计的消融实验。(a) 展示不同交错长度（2/4/6）对收敛速度和最终性能的影响；(b) 验证交错设计对模型学习动态关系的重要性。
 - **收敛阶段**：交错序列模型**收敛更快且 loss 更低**
 - 更长交错的模型最终 loss 更低
 
