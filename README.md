@@ -22,6 +22,7 @@
 | DVGT-2 | arXiv 2026 | Vision-Geometry-Action 端到端自动驾驶，O(1) 帧复杂度，NAVSIM PDMS 90.3 | [DVGT-2_精读报告.md](./VLA/DVGT-2_精读报告.md) |
 | Actuate 2025 | 视频 2026 | Sergey Levine & Liyiming Ke：第二代 VLA 与机器人 Foundation Model，RL Post-training 是模仿学习的关键补充 | [Actuate2025_SergeyLevine_精读报告.md](./VLA/Actuate2025_SergeyLevine_精读报告.md) |
 | **MINT** | arXiv 2026 | 上交大：频域多尺度动作Tokenizer（SDAT），解耦Intent Token与Execution Tokens，One-Shot跨任务迁移超越Fine-tuning 60pp，LIBERO 98.3% SOTA | [MINT-论文精读-arXiv2602.08602.md](./VLA/MINT/MINT-论文精读-arXiv2602.08602.md) |
+| **π0.7** | PI 2026 | 多样化上下文条件化，通用模型无需微调匹配专用RL，零样本跨本体衬衫折叠达到人类专家水平，~5B参数（Gemma3 4B + 860M Action Expert） | [π0.7_精读报告.md](./VLA/π0.7_精读报告.md) |
 
 ## WorldModel
 
