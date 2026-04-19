@@ -53,3 +53,4 @@
 | World Model 训练 Loss 设计 | ELBO / KL Balancing / JEPA / LPIPS / VQ-VAE Loss 详解，含主流 SOTA 工作Loss汇总 | [WorldModel训练Loss设计详解.md](./FM基础知识/WorldModel训练Loss设计详解.md) |
 | **DCT（离散余弦变换）** | 频域信号处理基础：DCT-II定义、频率物理含义、与FFT对比，及其在MINT频域解耦中的作用 | [DCT（离散余弦变换）详解.md](./FM基础知识/DCT（离散余弦变换）详解.md) |
 | **Kimi Attention Residuals** | Moonshot AI：跨层选择性注意力残差连接，相同 Loss 下节省 25% 计算资源，Infra 是结构创新上限 | [Kimi_Attention_Residuals_精读报告.md](./FM基础知识/Kimi_Attention_Residuals_精读报告.md) |
+| **RoPE / 3DPE / mRoPE** | 位置编码技术详解：Sinusoidal、Learned、ALiBi、RoPE、2D/3DPE、mRoPE（DVGT-2 时序融合） | [RoPE及3DPE技术详解.md](./FM基础知识/RoPE及3DPE技术详解.md) |
