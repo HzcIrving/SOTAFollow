@@ -1,6 +1,8 @@
 # MoE 做 RL：训练-推理不一致问题
 
 > 本文档结合 Routing Replay 机制与 GSPO 算法解析
+>
+> **视频来源**：丁师兄大模型 - [面试官：MoE模型做RL，训推不一致怎么办？](https://www.bilibili.com/video/BV1khQbBLE4u/)
 
 ---
 
@@ -12,19 +14,13 @@ MoE（Mixture of Experts）模型中，训练阶段和推理阶段的 token-expe
 
 | 阶段 | Expert 路由行为 |
 |------|----------------|
-| **推理** | 稀疏激活，每个 token 仅激活 Top-K 个 expert（如 Top-2/8） |
+| **推理** | 稀疏激活，每个 token 仅激活 Top-K 个 expert（如 Top-2/8），但这个决定不是确定性的——同一个输入跑两遍可能激活的专家不一样 |
 | **训练（PPO/GRPO）** | 需要对所有 expert 计算 value function、优势函数，反向传播需全 expert 参与计算 |
 | **核心矛盾** | RL 训练时的 expert 利用分布 ≠ 推理时的 expert 利用分布 |
 
-### 1.2 根因：Policy Gradient 中的 Importance Sampling
+### 1.2 根因：Expert 路由的随机性
 
-PPO/GRPO 类算法依赖旧策略 $\pi_{\text{old}}$ 采样：
-
-$$
-\frac{\nabla \mathcal{L}_{\text{RL}}}{\nabla \theta} \approx \mathbb{E}_{x \sim \pi_{\text{old}}} \left[ \frac{\pi_\theta(x)}{\pi_{\text{old}}(x)} \nabla \log \pi_\theta(x) \right]
-$$
-
-问题在于：$\pi_{\text{old}}$ 中某个 token 分配给 Expert A，但在 $\pi_\theta$ 中可能分配给 Expert B，导致 **distribution shift**（分布偏移）。
+PPO/GRPO 类算法依赖旧策略 $\pi_{\text{old}}$ 采样。当你在推理引擎做 rollout 采样后，这些样本去训练引擎做梯度更新时，即使是同一条 response，你在前向一遍激活的专家可能变了——算出来的 logit 也变了。这就导致重要性权重（importance weight）的方差会非常大，训练直接崩掉。
 
 ---
 
@@ -34,21 +30,13 @@ $$
 
 训练时**记录每个 token 在推理阶段的 routing 决策**（即 expert 分配结果），在后续训练中使用这些记录来保持一致性。
 
-```python
-# 伪代码：Routing Replay 机制
-class RoutingReplayBuffer:
-    def __init__(self):
-        self.routing_history = {}  # token_id -> expert_assignments
-    
-    def record(self, token_ids, expert_assignments):
-        """记录推理时的 routing 决策"""
-        for token_id, expert_list in zip(token_ids, expert_assignments):
-            self.routing_history[token_id] = expert_list
-    
-    def replay(self, token_ids):
-        """回放历史 routing 决策，约束训练时的分配"""
-        return [self.routing_history.get(tid, None) for tid in token_ids]
-```
+该方法已形式化，主要有两个对齐目标：
+
+| 方法 | 描述 |
+|------|------|
+| **R1** | 让训练时候算 reward 分布的那次前向复用推理时候存下来的路由决策 |
+| **R2** | 在算 reward 分子的时候也做复用 |
+| **R3** | 在算 reward 分子和分母时都使用存储的路由 |
 
 ### 2.2 训练流程
 
@@ -66,13 +54,27 @@ $$
 |------|------|
 | 训练与推理 routing 一致性提升 | 需要额外存储 routing 历史 |
 | 减少因 distribution shift 导致的梯度方差 | 记录频率和存储开销 |
-| 实现相对简单 | 长期训练中历史 routing 可能过时 |
+| 实现相对简单 | **锁死路由后，模型的探索空间被限制**——同一组输入输出对理论上可以对应很多种不同的专家激活模式，强行重放等于砍掉了这部分多样性 |
 
 ---
 
-## 3. 解决方案二：GSPO（Group Sampling Policy Optimization）
+## 3. 解决方案二：多次采样降低方差
 
-### 3.1 背景：GRPO 的问题
+### 3.1 核心思想
+
+既然专家路由引入了随机性，那能不能通过**多次采样**来降低这个方差？
+
+具体做法：对同一个输入输出 pair 在推理引擎多跑几次前向，得到不同的专家路由，然后去平均。这样估计出来的概率就比单次前向稳定得多。
+
+### 3.2 效果
+
+快手的 CostCo 团队在 2023 年提出这个方法，效果比 RunningMan 更好，而且**不会限制模型的探索能力**。
+
+---
+
+## 4. 解决方案三：GSPO（Group Sampling Policy Optimization）
+
+### 4.1 背景：GRPO 的问题
 
 DeepSeek GRPO 核心思想是对同一 prompt 采样多个回复，用 group 内 baseline 计算优势：
 
@@ -80,9 +82,12 @@ $$
 A_i = \frac{r_i - \mu_{\text{group}}}{\sigma_{\text{group}}}
 $$
 
-**MoE 场景下的问题**：GRPO 的优势估计基于 final reward，但 MoE 的 routing 决策是在 token-level 做出的——单个 token 的 routing 质量无法从 episode-level reward 直接监督。
+**MoE 场景下的问题**：
+1. GRPO 的重要性权重本身设计有问题——GRPO 是在 sequence-level 算 reward 的，但每个 token 只有一个采样样本
+2. 这**违背了重要性采样需要多样本的基本前提**
+3. 单个 token 的 routing 质量无法从 episode-level reward 直接监督
 
-### 3.2 GSPO 核心思想
+### 4.2 GSPO 核心思想
 
 GSPO = **Group Sampling + Token-level Routing Alignment**
 
@@ -104,7 +109,7 @@ $$
 \text{RoutingReg} = D_{\text{KL}}\left( \text{RoutingDist}_{\text{train}} \| \text{RoutingDist}_{\text{inference}} \right)
 $$
 
-### 3.3 GSPO vs GRPO 对比
+### 4.3 GSPO vs GRPO 对比
 
 | 维度 | GRPO | GSPO |
 |------|------|------|
@@ -115,49 +120,43 @@ $$
 
 ---
 
-## 4. 综合方案：Routing Replay + GSPO 联合使用
+## 5. 综合方案对比
 
-### 4.1 推荐实践流程
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Rollout 阶段                          │
-│  1. 推理采样，记录每个 token 的 expert 分配              │
-│  2. 计算 episode reward                                 │
-│  3. Routing Replay Buffer 记录 routing 历史             │
-└─────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────┐
-│                    GSPO 训练阶段                         │
-│  1. Group Sampling：对同一 prompt 采样多条轨迹           │
-│  2. Token-level Advantage Estimation                   │
-│  3. Routing Regularization：KL(训练分布 ‖ 推理分布)    │
-│  4. Backpropagation 更新 policy + routing network      │
-└─────────────────────────────────────────────────────────┘
-```
-
-### 4.2 其他辅助手段
-
-| 方法 | 描述 |
-|------|------|
-| **Expert Dropout** | 训练时随机 drop 部分 expert，模拟推理时的稀疏激活 |
-| **容量限制（Capacity Capping）** | 限制每个 token 最多分配的 expert 数量 |
-| **辅助负载均衡损失** | 防止少数 expert 主导，造成 overfitting |
-| **软路由蒸馏** | 用软概率分布替代硬 TopK，减少训练-推理 gap |
+| 方法 | 核心思路 | 优点 | 缺点 |
+|------|----------|------|------|
+| **Routing Replay** | 存储推理时的路由，训练时重放 | 训练稳定 | 限制探索空间 |
+| **多次采样平均** | 同一输入多次前向取平均 | 不限制探索 | 计算开销大 |
+| **GSPO** | Token-level advantage + Group Sampling | 根本性解决高方差问题 | 实现复杂 |
 
 ---
 
-## 5. 面试一句话回答
+## 6. 面试回答模板
 
-> **MoE 做 RL 训推不一致的核心矛盾是：推理时稀疏激活 Top-K expert，但 RL 训练需要对所有 expert 计算 advantage 和梯度，导致 routing 分布不同。解决方案一是用 Routing Replay 记录推理时的 expert 分配并在训练中约束一致性；方案二是用 GSPO（Group Sampling Policy Optimization），通过 Group 内共享 routing pattern 和 token-level advantage 估计，配合 KL 正则项使训练分布逼近推理分布，从根本上降低 variance 并提升 MoE 训练稳定性。**
+**先点名问题本质**：专家路由的随机性导致体度估计方差大
+
+**然后说最直接的解法**：Routing replay——把推理时的路由存下来，训练时重放，但会限制探索空间
+
+**接着说更优的方案**：
+- 一个是多次前向去平均（来自快手 CostCo 团队）
+- 另一个是从算法层面改进，用 GSPO 做 token-level advantage estimation
+
+**核心记住**：MoE RL 不稳定的根源是路由随机性导致的高方差。解法要么是对齐推理的路由决策，要么是通过采样或算法设计来降低方差。
 
 ---
 
-## 6. 追问储备
+## 7. 追问储备
 
 | 问题 | 回答要点 |
 |------|----------|
 | GSPO 的 Group Sampling 是什么？ | 对同一 prompt 采样多条回复构成 group，用 group 内 baseline 计算 advantage，减少 reward variance |
-| 为什么 GRPO 在 MoE 上不够用？ | GRPO 只做 sequence-level advantage，没有约束 token-level routing 分布，MoE expert 容易偏斜 |
-| Expert Dropout 的 dropout rate 通常多少？ | 0.1~0.2，训练初期可以更高让 expert 更均匀，后期降低保留性能 |
+| 为什么 GRPO 在 MoE 上不够用？ | GRPO 只做 sequence-level advantage，没有约束 token-level routing 分布，MoE expert 容易偏斜；且违背了重要性采样需要多样本的基本前提 |
+| 为什么 Routing Replay 会限制探索？ | 把路由锁死后，模型的探索空间被限制。同一输入输出对理论上可以对应多种不同的专家激活模式，强行重放等于砍掉了多样性 |
+| 多次采样具体怎么做？ | 对同一个输入输出 pair 在推理引擎多跑几次前向得到不同的专家路由，然后去平均估计概率 |
 
+---
+
+## 8. 参考文献
+
+- DeepSeek GRPO: Group Relative Policy Optimization
+- 快手 CostCo Team: 多专家采样平均方法 (2023)
+- Sanmu Team: GSPO (Group Sampling Policy Optimization)
