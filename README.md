@@ -36,7 +36,10 @@
 
 ## RL
 
-（暂无论文）
+| 论文 | 会议/年份 | 核心贡献 | 文档 |
+|------|----------|----------|------|
+| **SAGE-GRPO** | ICML 2026 | 流形感知探索：精确 ODE-to-SDE 方差积分（含对数曲率校正）+ 梯度范数均衡器 + 双信任域（位置-速度双重控制），解决视频 GRPO 高噪声区 off-manifold 漂移问题，HunyuanVideo VideoAlign Overall 0.81 vs CPS 0.37 | [SAGE-GRPO_精读报告.md](./RL/SAGE-GRPO_精读报告.md) |
+| **FlowGRPO** | arXiv 2025 | 首个将 GRPO 引入 Flow Matching 的工作：marginal-preserving ODE-to-SDE 转换 + Denoising Reduction（训练10步/推理全步），GenEval SD3.5-M 63%→95%，几乎无 reward hacking | [SAGE-GRPO_精读报告.md](./RL/SAGE-GRPO_精读报告.md)（含 FlowGRPO ODE-to-SDE 详解） |
 
 ## FM基础知识
 
