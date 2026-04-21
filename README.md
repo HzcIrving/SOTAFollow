@@ -6,7 +6,7 @@
 
 | 分类 | 简介 | 文档 |
 |------|------|------|
-| [RL](./面筋/RL/) | 强化学习相关 | [MoE_RL_训推不一致](./面筋/RL/MoE_RL_训推不一致.md)（MoE做RL训练-推理不一致：Routing Replay、GSPO）、[智元RL技术凉经](./面筋/RL/智元RL技术凉经.md)（PPO/SAC/CQL 算法与端到端自动驾驶） |
+| [RL](./面筋/RL/) | 强化学习相关 | [MoE_RL_训推不一致](./面筋/RL/MoE_RL_训推不一致.md)（MoE做RL训练-推理不一致）、[智元RL技术凉经](./面筋/RL/智元RL技术凉经.md)（RL后训练面试题）、[GRPO vs SFT数据差异](./面筋/RL/GRPO_vs_SFT训练数据差异.md)（SFT与GRPO数据需求、难度分布、格式差异） |
 | [LLM](./面筋/LLM/) | 大语言模型相关 | [LLM面试深度知识点-五大模块详解](./面筋/LLM/LLM面试深度知识点-五大模块详解.md)、[LLM面试入门知识点](./面筋/LLM/LLM面试入门知识点.md) |
 | [VLA](./面筋/VLA/) | Vision-Language-Action 相关 | （待填充） |
 | [WM](./面筋/WM/) | WorldModel 相关 | （待填充） |
