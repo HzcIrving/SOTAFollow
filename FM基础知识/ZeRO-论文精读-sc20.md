@@ -136,4 +136,105 @@ ZeRO 的通信可以与计算重叠，因此训练效率几乎不受影响。
 
 ---
 
+## 7. ZeRO-3 训练伪代码
+
+```python
+import torch
+import torch.distributed as dist
+from typing import List
+
+class ZeRO3Optimizer:
+    """
+    ZeRO-3: 分区所有状态（参数、梯度、优化器状态）
+    """
+    def __init__(self, model, optimizer, partition_size, world_size):
+        self.model = model
+        self.optimizer = optimizer
+        self.partition_size = partition_size  # 每 GPU 存储的参数比例
+        self.world_size = world_size
+        self.rank = dist.get_rank()
+
+    def zero_redundancy_optimize(self):
+        """
+        核心思想：
+        1. 将模型参数按 rank 分区，每个 GPU 只负责 1/Nd 的参数
+        2. 前向/反向传播时，通过 All-Gather 收集所需参数
+        3. 梯度通过 Reduce-Scatter 聚合并分区
+        4. 优化器更新只涉及本地参数分区
+        """
+        # 初始化分区：将参数分配给不同 GPU
+        self._partition_parameters()
+
+        # 训练循环
+        for batch in dataloader:
+            # ===== 前向传播 =====
+            # 1. 收集完整参数（All-Gather）
+            params = self._all_gather_parameters()
+
+            # 2. 前向计算
+            output = self.model(params, batch)
+
+            # 3. 释放非本地参数（节省显存）
+            self._release_nonlocal_parameters()
+
+            # ===== 反向传播 =====
+            # 4. 重新收集参数进行反向计算
+            params = self._all_gather_parameters()
+            output.backward()
+
+            # 5. 梯度分区聚合（Reduce-Scatter）
+            self._reduce_scatter_gradients()
+
+            # 6. 释放参数
+            self._release_nonlocal_parameters()
+
+            # ===== 优化器更新 =====
+            # 7. 只更新本地参数分区
+            self.optimizer.step()
+
+            # 8. 同步更新后的参数
+            self._broadcast_updated_parameters()
+
+    def _partition_parameters(self):
+        """将模型参数分区给不同 GPU"""
+        for name, param in self.model.named_parameters():
+            # 根据 rank 计算参数分区的起始和结束位置
+            start = self.rank * len(param) // self.world_size
+            end = (self.rank + 1) * len(param) // self.world_size
+            # 每个 GPU 只存储自己负责的参数分区
+            param.data = param.data[start:end]
+
+    def _all_gather_parameters(self) -> torch.Tensor:
+        """通过 All-Gather 收集完整参数"""
+        # 注意：实际实现中只在需要时收集，而非存储完整副本
+        tensor_list = [torch.zeros_like(param) for _ in range(self.world_size)]
+        dist.all_gather(tensor_list, self.local_param)
+        return torch.cat(tensor_list, dim=0)
+
+    def _reduce_scatter_gradients(self):
+        """通过 Reduce-Scatter 聚合梯度并分区"""
+        # 每个 GPU 只保留自己负责参数的梯度
+        dist.reduce_scatter(self.local_grad,
+                           op=dist.ReduceOp.SUM,
+                           group=self.process_group)
+
+    def _broadcast_updated_parameters(self):
+        """将更新后的参数广播给所有 GPU"""
+        dist.broadcast(self.local_param, src=self.rank)
+```
+
+---
+
+## 8. 通信量分析
+
+| ZeRO Stage | 通信量（每参数字节） | 适用场景 |
+|-----------|-------------------|---------|
+| ZeRO-1 | $2\phi$ (All-Gather) | 单机多卡，中等规模 |
+| ZeRO-2 | $2\phi$ + $2\phi$ (All-Gather + Reduce-Scatter) | 多机多卡 |
+| ZeRO-3 | $2\phi N_d$ (多次 All-Gather) | 超大规模（万亿参数）|
+
+其中 $\phi$ 是参数字节数（FP16 为 2 字节）。
+
+---
+
 *精读日期: 2026-04-15*

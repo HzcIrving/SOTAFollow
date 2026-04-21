@@ -1,5 +1,7 @@
 # Kimi Attention Residuals 精读报告
 
+> ⚠️ **论文尚未正式发表，本文内容根据小红书非官方渠道整理，请以官方论文为准**
+>
 > **来源**：小红书「kimi新论文｜Infra决定结构创新上限」
 > **链接**：https://www.xiaohongshu.com/discovery/item/69cf3b6a00000000230269fd
 > **整理时间**：2026-04-16
@@ -13,6 +15,7 @@
 | **论文标题** | Kimi Attention Residuals（待官方确认） |
 | **arXiv ID** | 尚未正式公开 |
 | **作者** | Kimi（Moonshot AI）团队 |
+| **⚠️ 声明** | 本文内容基于非官方渠道整理，实验数据为推断性内容，请以官方论文为准 |
 | **机构** | Moonshot AI（月之暗面） |
 | **核心关键词** | Attention Residual Connection, Cross-Layer Selection, Layer Connectivity, Transformer 架构改进 |
 
