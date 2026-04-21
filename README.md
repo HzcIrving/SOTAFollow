@@ -41,6 +41,7 @@
 |------|----------|----------|------|
 | **FlowGRPO** | arXiv 2025 | 首个将 GRPO 引入 Flow Matching 的工作：marginal-preserving ODE-to-SDE 转换（推导 reverse-time SDE 并离散化）+ Denoising Reduction（训练10步/推理全步），SD3.5-M GenEval 63%→95%，几乎无 reward hacking | [FlowGRPO_精读报告.md](./RL/FlowGRPO_精读报告.md) |
 | **RAD** | NeurIPS 2025 | 首个3DGS-RL端到端自动驾驶训练框架，RL+IL协同优化解决因果混淆和开环gap，碰撞率降低3倍 | [RAD_精读报告.md](./RL/RAD_精读报告.md) |
+| **RAD-2** | arXiv 2026 | Generator-Discriminator框架：扩散生成器+RL判别器，TCR-GRPO+On-policy Gen Opt算法，BEV-Warp高吞吐仿真，碰撞率较扩散规划器降低56% | [RAD-2_精读报告.md](./RL/RAD-2_精读报告.md) |
 
 ## FM基础知识
 
