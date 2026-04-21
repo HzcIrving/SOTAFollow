@@ -63,3 +63,11 @@
 | **流式三维重建 GCT** | Ant Group：几何上下文注意力替代全连接注意力，ETH3D 98.98% F1 + 20 FPS，突破长序列漂移瓶颈 | [流式三维重建-几何上下文Transformer-精读报告.md](./FM基础知识/流式三维重建-几何上下文Transformer-精读报告.md) |
 | PETR | 自动驾驶 3D 检测：3D 位置编码融合相机几何，DETR 范式端到端检测 | [PETR-论文精读.md](./FM基础知识/PETR-论文精读.md) |
 | PETR V2 | PETR 改进：Feature-Guided Position Encoding、3D 坐标对齐时序融合 | [PETR V2-论文精读.md](./FM基础知识/PETR%20V2-论文精读.md) |
+
+## DailyAgent
+
+> AI 工具使用技巧、Agent 工作流、效率提升策略
+
+| 主题 | 简介 | 文档 |
+|------|------|------|
+| **Claude Code Context Rot & Rewind** | Claude Code 团队正式承认 1M 上下文会"腐烂"，25% 开始退化、50% 为拐点，Rewind 是 Thariq 最推荐的应对方案 | [ClaudeCode_context_rot_rewind.md](./DailyAgent/ClaudeCode/ClaudeCode_context_rot_rewind.md) |
