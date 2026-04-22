@@ -50,7 +50,10 @@ $$
 模型通过最小化 Flow Matching 目标函数来学习速度场 $\mathbf{v}_\theta(\mathbf{x}_t, t)$：
 
 $$
-\mathcal{L}(\theta) = \mathbb{E}_{t, \mathbf{x}_0, \mathbf{x}_1} \left[ \left\| \mathbf{v} - \mathbf{v}_\theta(\mathbf{x}_t, t) \right\|^2 \right], \quad \mathbf{v} = \mathbf{x}_1 - \mathbf{x}_0 \tag{2}
+\mathcal{L}(\theta) = \mathbb{E}_{t, \mathbf{x}_0, \mathbf{x}_1} \left[ \left\| \mathbf{v} - \mathbf{v}_\theta(\mathbf{x}_t, t) \right\|^2 \right]
+$$
+
+其中 $\mathbf{v} = \mathbf{x}_1 - \mathbf{x}_0$。
 $$
 
 #### 1.2 确定性 ODE 采样的根本问题
@@ -173,8 +176,10 @@ $$
 代入 $\boldsymbol{\mu}$ 的具体形式，经过化简得到：
 
 $$
-D_{\text{KL}}(\pi_\theta \| \pi_{\text{ref}}) = \frac{\Delta t}{2} \left( \frac{\sigma_t(1-t)}{2t} + \frac{1}{\sigma_t} \right)^2 \left\| \mathbf{v}_\theta(\mathbf{x}_t, t) - \mathbf{v}_{\text{ref}}(\mathbf{x}_t, t) \right\|^2 \tag{10}
+D_{\text{KL}}(\pi_\theta \| \pi_{\text{ref}}) = \frac{\Delta t}{2} \left\| \mathbf{v}_\theta(\mathbf{x}_t, t) - \mathbf{v}_{\text{ref}}(\mathbf{x}_t, t) \right\|^2 \tag{10}
 $$
+
+其中 $\frac{\Delta t}{2} \left( \frac{\sigma_t(1-t)}{2t} + \frac{1}{\sigma_t} \right)^2$ 为系数项。
 
 **简化分析：** 代入 $\sigma_t = a\sqrt{t/(1-t)}$ 后，KL 散度在 $t$ 方向上由 $\frac{1}{t(1-t)}$ 类项主导，在 $t \to 0$ 和 $t \to 1$ 时会显著放大。这是后续 SAGE-GRPO 重点解决的问题。
 
@@ -203,8 +208,10 @@ $$
 将 PPO-style clipped objective 与 KL penalty 结合：
 
 $$
-\mathcal{J}_{\text{Flow-GRPO}}(\theta) = \mathbb{E} \left[ \frac{1}{G} \sum_{i=1}^G \frac{1}{T} \sum_{t=0}^{T-1} \left( \min\left(r_t^i(\theta) \hat{A}_t^i, \text{clip}(r_t^i(\theta), 1-\varepsilon, 1+\varepsilon) \hat{A}_t^i\right) - \beta \, D_{\text{KL}}(\pi_\theta \| \pi_{\text{ref}}) \right) \right] \tag{5}
+\mathcal{J}_{\text{Flow-GRPO}}(\theta) = \mathbb{E} \left[ \frac{1}{G} \sum_{i=1}^G \frac{1}{T} \sum_{t=0}^{T-1} \left( \min\left(r_t^i(\theta) \hat{A}_t^i, \text{clip}(r_t^i(\theta), 1-\varepsilon, 1+\varepsilon) \hat{A}_t^i\right) - \beta \, D_{\text{KL}} \right) \right] \tag{5}
 $$
+
+其中 $D_{\text{KL}} = D_{\text{KL}}(\pi_\theta \| \pi_{\text{ref}})$。
 
 ### 6. Denoising Reduction
 
