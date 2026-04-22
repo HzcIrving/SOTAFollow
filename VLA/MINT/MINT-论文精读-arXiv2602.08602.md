@@ -110,7 +110,7 @@ $$
 给定潜在嵌入 $f$，频域解码器 $\mathcal{D}_{\text{spec}}$ 重建动作序列，并沿时间维度施加 DCT（Discrete Cosine Transform）。对于每个动作维度 $d \in \{1, \dots, D\}$，DCT 系数计算为：
 
 $$
-\mathbf{F}_{k,d} = \sum_{h=0}^{H-1} \hat{\mathbf{A}}_{h,d} \cos\left[\frac{\pi}{H}\left(h + \frac{1}{2}\right) k\right], \quad k = 0, \dots, H-1
+\mathbf{F}_{k,d} = \sum_{h=0}^{H-1} \hat{\mathbf{A}}_{h,d} \cos\left(\frac{\pi}{H}\left(h + \frac{1}{2}\right) k\right), \quad k = 0, \dots, H-1
 $$
 
 其中 $\mathbf{F} \in \mathbb{R}^{H \times D}$ 是频域表示。
