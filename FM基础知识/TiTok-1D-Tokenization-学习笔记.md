@@ -6,7 +6,34 @@
 
 ---
 
-## 1. 核心思想：1D vs 2D Tokenization
+## 1. Motivation（问题背景）
+
+### 1.1 传统 2D Tokenizer 的局限
+
+传统 VQGAN 等方法将图像编码为 **2D Grid Latent**（如 16×16 = 256 tokens），存在两个根本性限制：
+
+1. **位置一一对应约束**：每个 Latent Token 必须与图像中的固定 patch 一一映射。这限制了 Tokenizer 利用图像内在冗余的能力——相邻 patch 往往高度相似，但 2D Grid 强制保留了这些冗余。
+2. **Latent Size 与图像分辨率强耦合**：若要减少 Token 数量，必须增大下采样因子，但这会丢失细节重建能力。
+
+### 1.2 核心问题
+
+> **"Is 2D structure necessary for image tokenization?"**
+
+**核心观察**：在图像理解任务中（分类、检测、分割），图像被编码为 **1D Sequence**（如 object queries、perceiver resampler），但输出不是图像因此不需要 de-tokenizer。这些方法证明：**更高层次的 1D 序列表示可以在更少的"位置标记"下捕获所有任务相关信息**。
+
+TiTok 正是将这一思路引入需要同时重建高级语义和低级细节的**图像重建与生成**任务中。
+
+### 1.3 Related Works
+
+| 方法 | 核心思想 | 局限性 |
+|------|----------|--------|
+| **VQGAN (2D Grid)** | 16×16=256 tokens | 位置冗余，分辨率耦合 |
+| **直接像素级** | 无压缩 | 维度极高，计算不可行 |
+| **VAE** | 连续潜在空间 | 难以与语言模型结合 |
+
+---
+
+## 2. 核心思想：1D vs 2D Tokenization
 
 ### 传统 2D Tokenizer（如 VQGAN）
 - 把图像切成固定格子（如 256 个 Token 对应 $16 \times 16$ 网格）
@@ -22,21 +49,21 @@
 
 ---
 
-## 2. TiTok 架构详解
+## 3. TiTok 架构详解
 
-### 整体流程
+### 3.1 整体流程
 ```
 原图 → Encoder → 32个连续向量 → Quantizer → 32个离散ID → Decoder → 重建图像
 ```
 
-### Encoder：32 个 Latent Tokens
+### 3.2 Encoder：32 个 Latent Tokens
 - 将图像切分成 Patch Tokens，与 32 个可学习的 Latent Tokens（Query）拼接
 - 通过 Self-Attention 交互，图像 Patch 信息被"吸"入 Latent Tokens
 - 最后丢弃图像 Patch，只保留 32 个 Latent Tokens
 
 **输出形状**：`[B, 32, 1024]`
 
-### Vector Quantizer（向量量化器）
+### 3.3 Vector Quantizer（向量量化器）
 将连续向量转换为离散 ID（"查字典"过程）：
 
 ```python
@@ -54,7 +81,7 @@ class VectorQuantizer(nn.Module):
         return discrete_ids, quantized_tokens
 ```
 
-### Straight-Through Estimator（STE）
+### 3.4 Straight-Through Estimator（STE）
 解决量化操作不可导问题：
 
 ```python
@@ -62,15 +89,15 @@ class VectorQuantizer(nn.Module):
 quantized_tokens_ste = encoder_tokens + (quantized_tokens - encoder_tokens).detach()
 ```
 
-### Decoder：32 + 256 Mask Tokens
+### 3.5 Decoder：32 + 256 Mask Tokens
 - Decoder 输入 = 32 个量化 Token + 256 个 Mask Tokens
 - 输出形状：`[B, 3, 256, 256]`
 
 ---
 
-## 3. 两阶段训练
+## 4. 两阶段训练
 
-### Stage 1：抄老前辈作业（Proxy Codes）
+### 4.1 Stage 1：抄老前辈作业（Proxy Codes）
 
 **为什么需要？**
 - 直接让 Decoder 还原 256×256 彩色像素太难，容易崩溃
@@ -85,7 +112,7 @@ quantized_tokens_ste = encoder_tokens + (quantized_tokens - encoder_tokens).deta
 - 量化本身就是信息截断
 - 字典容量有限（4096种），细微光影变化被强行归类
 
-### Stage 2：出师，回归真实像素
+### 4.2 Stage 2：出师，回归真实像素
 
 **核心操作**：
 - 冻结 Encoder 和 Quantizer（保留学到的"骨架"能力）
@@ -107,19 +134,19 @@ total_g_loss = loss_rec + 0.1 * loss_lpips + 0.1 * loss_gan_g
 
 **效果**：rFID 从 5.48（Stage 1）降到 2.21（Stage 2）
 
-### Stage 1 vs Stage 2 Decoder
+### 4.3 Stage 1 vs Stage 2 Decoder
 - **主干（Body）**：同一个 Transformer 网络，完全继承
 - **输出头（Head）**：从分类器（预测 ID）→ 回归器（输出 RGB 像素）
 
 ---
 
-## 4. MaskGIT：配合 TiTok 的生成大脑
+## 5. MaskGIT：配合 TiTok 的生成大脑
 
-### 核心思想
+### 5.1 核心思想
 - Tokenizer 只是"执行者"，没有想象力
 - MaskGIT 负责"想象"出 32 个代表图像的离散 ID
 
-### 训练阶段：随机填空题
+### 5.2 训练阶段：随机填空题
 ```python
 # 随机掩码：挖掉一部分 ID
 mask_ratio = torch.rand(batch_size, 1)  # 随机挖空比例
@@ -134,11 +161,11 @@ logits = transformer(input_ids, text_embeddings)
 loss = F.cross_entropy(logits[mask_bool], image_ids[mask_bool])
 ```
 
-### 多模态能力
+### 5.3 多模态能力
 - 文本通过 CLIP/T5 编码成特征向量
 - Transformer 中使用 Cross-Attention 注入文本信息
 
-### 推理阶段：渐进式"刮刮乐"
+### 5.4 推理阶段：渐进式"刮刮乐"
 1. 输入全 [MASK] 的白板序列
 2. 预测所有位置，取置信度最高的几个固定
 3. 循环迭代，逐步填满 32 个 ID
@@ -149,7 +176,7 @@ loss = F.cross_entropy(logits[mask_bool], image_ids[mask_bool])
 
 ---
 
-## 5. 数据预处理
+## 6. 数据预处理
 
 | 步骤 | 操作 | 目的 |
 |------|------|------|
@@ -159,7 +186,7 @@ loss = F.cross_entropy(logits[mask_bool], image_ids[mask_bool])
 
 ---
 
-## 6. 验证 Tokenizer 质量
+## 7. 验证 Tokenizer 质量
 
 最简单的测试：图像重建
 
@@ -176,7 +203,7 @@ with torch.no_grad():
 
 ---
 
-## 面试重点速记
+## 8. 面试重点速记
 
 | 问题 | 核心回答 |
 |------|---------|
@@ -189,7 +216,7 @@ with torch.no_grad():
 
 ---
 
-## 知识图谱
+## 9. 知识图谱
 
 ```
 TiTok (图像压缩)

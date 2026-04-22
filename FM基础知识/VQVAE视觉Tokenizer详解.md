@@ -1,12 +1,52 @@
 # VQVAE 视觉 Tokenizer 详解
 
-> 📅 创建时间：2026-04-13  
-> 🏷️ 分类：FM基础知识 / WorldModel / VQVAE  
+> 📅 创建时间：2026-04-13
+> 🏷️ 分类：FM基础知识 / WorldModel / VQVAE
 > 📌 标签：VQVAE、视觉Tokenizer、Codebook、World Model、视觉表征
 
 ---
 
-## 一、背景：从像素到离散 token
+## 1. Motivation（问题背景）
+
+### 1.1 为什么 World Model 需要视觉 Tokenizer？
+
+World Model 的核心任务是学习环境动态 $p(s_{t+1}|s_{t}, a_{t})$。在实际系统中，**原始像素帧 $s_{t}$ 维度极高**（一张 256×256 的 RGB 图像就有 196,608 维），直接在像素空间学习世界模型面临两大根本问题：
+
+1. **计算不可行**：高维像素空间意味着巨大的计算和存储开销
+2. **语义鸿沟**：像素级重建 loss 不利于模型学习高维语义表征
+
+因此需要一个**视觉压缩器**将原始图像压缩到一个**低维、离散、可学习的隐空间**——这正是 **VQVAE（Vector Quantized Variational AutoEncoder）** 的核心使命。
+
+### 1.2 VQVAE 在 World Model 中的位置
+
+```
+原始视频帧序列
+    ↓
+[Encoder] → 高维特征 h = f(x)  （连续向量，维度仍较高）
+    ↓
+[Quantization] → z = quantize(h)  （离散 token，来自码本）
+    ↓
+[Decoder] → 重构图像 x' = g(z)
+    ↓
+隐码序列 z_1, z_2, ..., z_T  → 送入 World Model 学习 p(z_{t+1}|z_t, a_t)
+```
+
+**关键洞察：** World Model 实际上是在**离散码本索引空间**而非像素空间进行规划与预测，大幅降低计算复杂度。
+
+### 1.3 Related Works
+
+| 方法 | 表征类型 | 局限性 |
+|------|---------|--------|
+| **直接像素级建模** | 连续 | 维度极高，计算不可行 |
+| **VAE / β-VAE** | 连续 | 潜在空间不离散，难以与语言模型结合 |
+| **AE（自动编码器）** | 连续 | 无量化，表征能力有限 |
+| **扩散模型解码器** | 连续 | 计算量极高 |
+
+**核心问题**：如何在保证表征质量的前提下，将图像压缩为**离散、低维**的 token 序列？
+
+---
+
+## 2. 背景：从像素到离散 token
 
 ### 1.1 为什么 World Model 需要视觉 Tokenizer？
 
@@ -35,7 +75,7 @@ World Model 的核心任务是学习环境动态 $p(s_{t+1}|s_{t}, a_{t})$。在
 
 ---
 
-## 二、VQVAE 原理详解
+## 3. VQVAE 原理详解
 
 ### 2.1 核心思想：用码本做离散化
 
@@ -136,7 +176,7 @@ class VectorQuantize(nn.Module):
 
 ---
 
-## 三、完整架构与数学推导
+## 4. 完整架构与数学推导
 
 ### 3.1 VQVAE 完整架构
 
@@ -345,7 +385,7 @@ class VQVAE(nn.Module):
 
 ---
 
-## 四、为什么选 VQVAE 作为视觉 Tokenizer？
+## 5. 为什么选 VQVAE 作为视觉 Tokenizer？
 
 ### 4.1 相比其他方案的优劣
 
@@ -393,7 +433,7 @@ $$
 
 ---
 
-## 五、码本原理与优势深度剖析
+## 6. 码本原理与优势深度剖析
 
 ### 5.1 码本是什么？
 
@@ -534,7 +574,7 @@ class VectorQuantizeWithEMA(nn.Module):
 
 ---
 
-## 六、VQVAE 在主流 World Model 中的应用
+## 7. VQVAE 在主流 World Model 中的应用
 
 ### 6.1 典型 Pipeline
 
@@ -557,7 +597,7 @@ class VectorQuantizeWithEMA(nn.Module):
 
 ---
 
-## 七、总结
+## 8. 总结
 
 1. **VQVAE 是 World Model 的视觉压缩标准方案**：将高维像素压缩为离散 token，World Model 在 token 空间学习动态，大幅提升效率。
 
