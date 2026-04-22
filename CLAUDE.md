@@ -94,6 +94,47 @@ README.md 是全局索引，包含：论文名、会议/年份、核心贡献、
 2. 论文文档使用 Markdown 格式，包含论文核心贡献、方法详解、实验结果等
 3. 飞书机器人状态文件包含过期自动提醒功能（7天任务期）
 
+## Git Push 网络问题处理
+
+**若 push 因网络问题不成功，多次重试直到成功：**
+```bash
+# 首次失败后持续重试
+while ! git push; do sleep 5; done
+# 或手动多次执行直到成功
+git push
+```
+
+## 精读报告生成与审核流程
+
+1. **生成 Markdown 文档**
+2. **使用 subagent 检查**（并发执行）：
+   - `@精读报告-proofread`：检查格式、内容完整性、图文对应
+   - `@Mathjax-review`：检查数学公式正确性
+3. **检查通过后**：git add + commit + push
+
+## 论文引用规范
+
+### Motivation 引用要求
+- 论文中引用其他工作时，需附上参考链接
+- 引用格式：`[论文名](链接)` + 简要说明
+
+### 论文信息汇总（每篇精读报告末尾）
+
+每篇论文精读报告末尾需包含 **参考链接** 章节：
+
+```markdown
+## 参考链接
+
+| 资源 | 链接 |
+|------|------|
+| **论文** | [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX) |
+| **代码** | [GitHub](https://github.com/xxx/xxx) |
+| **项目主页** | [Project Page](https://xxx.com) |
+| **博客解读** | [Blog](https://xxx.com/blog) |
+```
+
+所有相关信息（论文、代码、博客、demo 等）都需归纳在此章节。
+
 ## 论文精读报告标准格式（9个必含章节）
 
 1. **Motivation（问题背景）**：论文提出是为了解决什么问题，可以列出 Related Works，即存在的问题（即本文提出所解决的问题）
