@@ -112,10 +112,8 @@ v_target = sg((v₁ + v₂)/2)
 ```
 
 **损失函数：**
-```
-L = E[ω(t) · ||φθ(x_t, t, d) - v_target||²]
-其中 ω(t) = 0.9t + 0.1（平衡全局结构和局部细节）
-```
+$$\mathcal{L} = \mathbb{E}\left[\omega(t) \cdot \|\phi_\theta(x_t, t, d) - v_{\text{target}}\|^2\right]$$
+其中 $\omega(t) = 0.9t + 0.1$（平衡全局结构和局部细节）
 
 **推理延迟对比：**
 

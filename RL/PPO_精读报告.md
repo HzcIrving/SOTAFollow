@@ -75,7 +75,26 @@ $$\mathcal{L}^{CLIP}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta) A_t,\;
 
 ## 3. GAE：优势函数估计
 
-### 3.1 TD(λ) 的一般化
+### 3.1 从 TD(λ) 到 GAE
+
+#### n-step Return
+
+定义 n-step 回报：
+$$G_t^{(n)} = r_t + \gamma r_{t+1} + \cdots + \gamma^{n-1} r_{t+n-1} + \gamma^n V(s_{t+n})$$
+
+对应的 n-step 优势估计：
+$$A_t^{(n)} = G_t^{(n)} - V(s_t)$$
+
+#### TD(λ) 回报
+
+TD(λ) 将不同 n-step 回报加权平均：
+$$G_t^{(\lambda)} = (1-\lambda) \sum_{n=1}^{\infty} \lambda^{n-1} G_t^{(n)}$$
+
+#### λ 的几何分布解释
+
+λ 实际上是几何分布的参数，决定了指数加权的衰减速度。
+
+### 3.2 TD(λ) 的一般化：GAE
 
 GAE (Generalized Advantage Estimation) 使用 TD(λ) 思想平衡偏差与方差：
 
@@ -83,24 +102,119 @@ $$\hat{A}_t^{GAE(\lambda)} = \sum_{l=0}^{\infty} (\gamma \lambda)^{l} \delta_{t+
 
 其中 $\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$ 是 TD 误差。
 
-### 3.2 截断版本（实际使用）
+**推导过程**：
 
-$$\hat{A}_t^{GAE(\lambda)} = \delta_t + (\gamma \lambda) \delta_{t+1} + \cdots + (\gamma \lambda)^{T-t-1} \delta_{T-1}$$
+从 n-step 优势展开：
+$$A_t^{(n)} = \delta_t + \gamma \delta_{t+1} + \cdots + \gamma^{n-1} \delta_{t+n-1}$$
 
-等价形式：
-$$\hat{A}_t = (1-\lambda) \left( \hat{A}_t^{(1)} + \lambda \hat{A}_t^{(2)} + \lambda^2 \hat{A}_t^{(3)} + \cdots \right)$$
+对 n-step 优势加权求和：
+$$\sum_{n=1}^{\infty} w_n A_t^{(n)} = \sum_{n=1}^{\infty} w_n \sum_{l=0}^{n-1} \gamma^l \delta_{t+l}$$
 
-其中 $\hat{A}_t^{(k)}$ 是 k-step 优势估计。
+交换求和顺序：
+$$= \sum_{l=0}^{\infty} \delta_{t+l} \sum_{n=l+1}^{\infty} w_n \gamma^l$$
 
-### 3.3 λ 参数的影响
+令 $w_n = (1-\lambda) \lambda^{n-1}$（TD(λ) 权重），得：
+$$\sum_{n=l+1}^{\infty} (1-\lambda) \lambda^{n-1} = (1-\lambda) \cdot \frac{\lambda^l}{1-\lambda} = \lambda^l$$
+
+所以：
+$$\sum_{n=1}^{\infty} w_n A_t^{(n)} = \sum_{l=0}^{\infty} \gamma^l \lambda^l \delta_{t+l} = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}$$
+
+这正是 GAE 的定义。
+
+### 3.3 截断版本（实际使用）
+
+由于 MDP 序列有限，实际使用截断版本：
+
+$$\hat{A}_t^{GAE(\lambda)} = \delta_t + (\gamma \lambda) \delta_{t+1} + (\gamma \lambda)^2 \delta_{t+2} + \cdots + (\gamma \lambda)^{T-t-1} \delta_{T-1}$$
+
+**递归形式**（更常用）：
+$$\hat{A}_t = \delta_t + \gamma \lambda \cdot \hat{A}_{t+1}$$
+
+其中 $\hat{A}_{T} = 0$（最后一步无后续优势）。
+
+### 3.4 λ 参数的影响
 
 | λ | 特性 | 等价于 |
 |---|------|--------|
 | λ = 0 | 仅TD误差，高偏差低方差 | TD(0) |
-| λ = 1 | Monte Carlo，无偏但高方差 | REINFORCE |
+| λ → 1 | Monte Carlo，无偏但高方差 | REINFORCE |
 | λ ∈ (0,1) | 平衡偏差与方差 | 介于两者之间 |
 
-### 3.4 Python 实现
+**λ 的有效范围分析**：
+
+当 λ ∈ (0, 1) 时：
+- 有效视角数 ≈ 1 / (1 - λ)
+- λ = 0.95 → 有效平均 20 步
+- λ = 0.99 → 有效平均 100 步
+
+### 3.5 GAE 与优势函数的关系
+
+**目标**：估计 $A^\pi(s_t, a_t) = Q^\pi(s_t, a_t) - V^\pi(s_t)$
+
+**GAE 提供的估计**：
+
+$$\hat{A}_t^{GAE(\lambda)} \approx A^\pi(s_t, a_t)$$
+
+当 λ = 1 时，GAE 退化为 Monte Carlo 优势估计：
+$$\hat{A}_t^{(1)} = \sum_{l=0}^{T-t-1} \gamma^l \delta_{t+l} = \sum_{l=0}^{T-t-1} \gamma^l r_{t+l} - V(s_t)$$
+
+这正是 $G_t - V(s_t)$，即 Q 值减去 baseline。
+
+### 3.6 为什么 GAE 有效？
+
+**核心洞察**：GAE 将不同 horizon 的优势估计指数加权组合
+
+1. **短期（l=0）**：TD 误差 $\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$
+   - 偏差：依赖当前价值函数估计
+   - 方差：低，因为只考虑一步
+
+2. **中期（l=1,2,...）**：累积 TD 误差
+   - 偏差：逐渐减小（bootstrap 次数减少）
+   - 方差：逐渐增大（累积随机性增加）
+
+3. **λ 控制偏差-方差权衡**：
+   - 小 λ：更依赖 bootstrap，高偏差低方差
+   - 大 λ：更接近 Monte Carlo，低偏差高方差
+
+### 3.7 GAE 计算流程图
+
+```
+                    ┌─────────────────────────┐
+                    │     轨迹序列            │
+                    │  s₀, r₀, s₁, r₁, ..., s_T │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │  预计算所有 V(s)         │
+                    │  (通过 Critic 网络)       │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │  计算 TD 误差            │
+                    │  δₜ = rₜ + γV(s_{t+1}) - V(sₜ) │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │  从后向前递推 GAE         │
+                    │  Aₜ = δₜ + γλ(1-dₜ)A_{t+1} │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │  优势归一化               │
+                    │  A = (A - μ) / (σ + ε)   │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │  用于 PPO 更新           │
+                    └─────────────────────────┘
+```
+
+### 3.8 Python 实现（详细注释）
 
 ```python
 def compute_gae(rewards, values, dones, gamma=0.99, lam=0.95):
@@ -120,18 +234,76 @@ def compute_gae(rewards, values, dones, gamma=0.99, lam=0.95):
     """
     T = len(rewards)
     advantages = torch.zeros(T)
+    returns = torch.zeros(T)
 
-    # 从后向前计算
+    # 从后向前计算（利用递归关系）
     gae = 0
     for t in reversed(range(T)):
-        # TD 误差
-        delta = rewards[t] + gamma * values[t+1] * (1 - dones[t]) - values[t]
-        # 指数加权求和
+        # ========== TD 误差 ==========
+        # δₜ = rₜ + γV(s_{t+1}) - V(sₜ)
+        next_value = values[t + 1] if t + 1 < len(values) else 0
+        delta = rewards[t] + gamma * next_value * (1 - dones[t]) - values[t]
+
+        # ========== 指数加权递推 ==========
+        # Aₜ = δₜ + γλ(1-dₜ)A_{t+1}
+        # (1 - dones[t]) 在 terminated 时截断后续优势
         gae = delta + gamma * lam * (1 - dones[t]) * gae
         advantages[t] = gae
 
-    returns = advantages + values[:-1]
+        # ========== 返回值（优势 + baseline）==========
+        returns[t] = gae + values[t]
+
     return advantages, returns
+
+
+def compute_gae_vectorized(rewards, values, dones, gamma=0.99, lam=0.95):
+    """
+    向量化 GAE 实现（更高效）
+    """
+    T = len(rewards)
+
+    # 计算所有 TD 误差
+    deltas = rewards[:-1] + gamma * values[1:] - values[:-1]
+
+    # 指数衰减权重
+    weights = torch.tensor([(gamma * lam) ** i for i in range(T)])
+
+    # 从后向前累积
+    advantages = torch.zeros(T)
+    running_sum = torch.zeros(T)
+
+    for t in reversed(range(T)):
+        running_sum[:t+1] += weights[t] * deltas[t]
+
+    # 归一化（可选）
+    advantages = running_sum
+
+    returns = advantages + values[:-1]
+
+    return advantages, returns
+```
+
+### 3.9 GAE 在 PPO 中的使用
+
+```python
+def ppo_update_with_gae(self, trajectory):
+    # 1. 计算 GAE
+    with torch.no_grad():
+        rewards = torch.tensor(trajectory['rewards'])
+        dones = torch.tensor(trajectory['dones'])
+        values = torch.stack(trajectory['values'])
+
+        advantages, returns = compute_gae(
+            rewards, values, dones,
+            gamma=self.gamma,
+            lam=self.lam
+        )
+
+        # 2. 优势归一化（重要！）
+        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+
+    # 3. 使用 GAE 优势进行 PPO 更新
+    # ... (见 4.1 完整伪代码)
 ```
 
 ---
