@@ -33,6 +33,8 @@
 | LeWorldModel | arXiv 2026 | 首个端到端 JEPA 世界模型，SIGReg 正则器防崩溃，15M 参数单 GPU 可训，48x 规划加速 | [LeWorldModel-论文精读报告.md](./WorldModel/LeWorldModel-论文精读报告.md) |
 | DreamerAD | arXiv 2026 | 基于解析世界模型的自动驾驶车辆控制，Shortcut Forcing 80× 加速，EPDMS 87.7 SOTA | [DreamerAD-论文解读.md](./WorldModel/DreamerAD-论文解读.md) |
 | Fast-WAM | arXiv 2026 | 北大&华为：World Action Model 测试时想象是否必要？端到端规划加速 48× | [Fast-WAM_精读报告.md](./WorldModel/Fast-WAM_精读报告.md) |
+| **Latent-WAM** | arXiv 2026 | 中科院&长安汽车：SCWE 16-query 场景压缩 + WorldMirror 几何蒸馏 + DLWM 因果世界建模，感知自由 89.3 EPDMS SOTA，104M 参数 | [Latent-WAM_精读报告.md](./WorldModel/Latent-WAM_精读报告.md) |
+
 | **硅谷101-世界模型深度解读** | B站 2026 | 系统性拆解世界模型定义、三层研发结构（感知→预测→控制）、四大技术路线（视频生成/3D空间智能/智能体训练/JEPA），深度分析对机器人/自动驾驶/内容产业的颠覆，附 LeCun/李飞飞等关键人物观点 | [世界模型_视频笔记_硅谷101.md](./WorldModel/世界模型_视频笔记_硅谷101.md) |
 
 ## RL
@@ -71,3 +73,5 @@
 | 主题 | 简介 | 文档 |
 |------|------|------|
 | **Claude Code Context Rot & Rewind** | Claude Code 团队正式承认 1M 上下文会"腐烂"，25% 开始退化、50% 为拐点，Rewind 是 Thariq 最推荐的应对方案 | [ClaudeCode_context_rot_rewind.md](./DailyAgent/ClaudeCode/ClaudeCode_context_rot_rewind.md) |
+
+| **Hermes Agent 新手使用十大技巧** | 小红书视频：新安装、主辅模型配置、SOUL.md 定义、记忆机制、通道配置、hermes doctor、UI 接入、一键迁移、技能安装 | [Hermes_Agent_新手使用十大技巧.md](./DailyAgent/Hermes/Hermes_Agent_新手使用十大技巧.md) |
