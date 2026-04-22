@@ -41,9 +41,9 @@ LoRA（Low-Rank Adaptation）提出冻结预训练模型权重，通过在Transf
 
 **假设**：模型适配过程中权重更新 $\Delta W$ 具有低秩性。
 
-对于预训练权重 $W_0 \in \mathbb{R}^{d \times k}$，我们冻结 $W_0$，同时用低秩分解来参数化 $\Delta W$：
+对于预训练权重 $W_0 \in \mathbf{R}^{d \times k}$，我们冻结 $W_0$，同时用低秩分解来参数化 $\Delta W$：
 
-$$\Delta W = BA, \quad B \in \mathbb{R}^{d \times r}, \quad A \in \mathbb{R}^{r \times k}$$
+$$\Delta W = BA, \quad B \in \mathbf{R}^{d \times r}, \quad A \in \mathbf{R}^{r \times k}$$
 
 其中 $r \ll \min(d, k)$ 是秩（通常取 1, 2, 4, 8, 16, 32, 64）。
 
