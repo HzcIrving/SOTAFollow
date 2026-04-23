@@ -24,7 +24,6 @@
 | **MINT** | arXiv 2026 | 上交大：频域多尺度动作Tokenizer（SDAT），解耦Intent Token与Execution Tokens，One-Shot跨任务迁移超越Fine-tuning 60pp，LIBERO 98.3% SOTA | [MINT-论文精读-arXiv2602.08602.md](./VLA/MINT/MINT-论文精读-arXiv2602.08602.md) |
 | **π0.7** | PI 2026 | 多样化上下文条件化，通用模型无需微调匹配专用RL，零样本跨本体衬衫折叠达到人类专家水平，~5B参数（Gemma3 4B + 860M Action Expert） | [π0.7_精读报告.md](./VLA/π0.7_精读报告.md) |
 | **VISTA** | arXiv 2026 | 世界模型生成视觉子目标，层次化VLA架构解决泛化瓶颈，未见场景14%→69%提升 | [VISTA_精读报告.md](./VLA/VISTA_精读报告.md) |
-| **Being-0** | arXiv 2025 | 分层Agent框架：FM(云)→VLM Connector(本地)→模块化技能库，84.4%任务完成率，4.2x导航效率；含与Latent-WAM对比(控制vs表征) | [Being-0_精读报告.md](./VLA/Being-0_精读报告.md) |
 
 ## WorldModel
 
