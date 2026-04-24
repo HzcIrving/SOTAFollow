@@ -48,6 +48,7 @@
 | PPO 精读 | - | 策略优化算法详解：Clipped Surrogate、GAE 优势估计、与 TRPO/SAC/DQN 对比、Python 伪代码、面试常见问题 | [PPO_精读报告.md](./RL/PPO_精读报告.md) |
 | **RAD** | NeurIPS 2025 | 首个3DGS-RL端到端自动驾驶训练框架，RL+IL协同优化解决因果混淆和开环gap，碰撞率降低3倍 | [RAD_精读报告.md](./RL/RAD_精读报告.md) |
 | **RAD-2** | arXiv 2026 | Generator-Discriminator框架：扩散生成器+RL判别器，TCR-GRPO+On-policy Gen Opt算法，BEV-Warp高吞吐仿真，碰撞率较扩散规划器降低56% | [RAD-2_精读报告.md](./RL/RAD-2_精读报告.md) |
+| **NPO / AutoNPO** | arXiv 2026 | 近未来策略优化：𝒮=Q/V有效学习信号最大化，近未来checkpoint提供高质量+低方差辅助轨迹，Qwen3-VL-8B Avg 57.88→63.15，AutoNPO自适应干预 | [Near-Future_Policy_Optimization_精读报告.md](./RL/Near-Future_Policy_Optimization_精读报告.md) |
 
 ## FM基础知识
 
