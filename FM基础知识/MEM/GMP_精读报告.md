@@ -307,38 +307,367 @@ GMP 的核心贡献不是某个新架构，而是**对"记忆"这件事的精准
 
 ## 10. 对自动驾驶时序融合的启发与借鉴点
 
-### 10.1 Memory Gate：按需激活的历史融合
+### 10.1 时序编码机制（Positional Encoding）
 
-GMP 的 Memory Gate 机制对自动驾驶时序融合有直接启发：
+GMP 的历史存储机制对自动驾驶感知的时间编码有直接借鉴意义：
 
-| 维度 | GMP 机器人场景 | 自动驾驶对应 |
-|------|---------------|-------------|
-| **何时融合** | 视觉误差对比校准 | 当前帧感知不确定时召回历史 |
-| **融合什么** | Cross-Attention 查询历史 KV | 目标检测/跟踪历史轨迹 |
-| **融合方式** | 门控加法 $z̄ = \mu \cdot h + z$ | 特征级门控或拼接 |
+**GMP 的时序信息隐式编码在 KV Cache 中**，每个历史时间步的 token 包含：
+- 图像 token（ViT 编码的视觉特征）
+- 动作 token（历史动作序列）
+- 时间步索引（通过序列位置隐式区分）
 
-**借鉴思路**：在自动驾驶感知中，当 BEV 特征与历史帧存在显著差异（如遮挡、新出现物体）时，激活历史融合；当场景稳定时关闭历史，减少噪声累积。
+**自动驾驶的时序编码设计**：
 
-### 10.2 Cross-Attention 的线性复杂度
+| 组件 | GMP 机器人 | 自动驾驶 |
+|------|-----------|---------|
+| **历史内容** | 图像 + 动作 tokens | BEV 特征 + 轨迹 + 雷达点云 |
+| **时间编码** | 隐式（位置索引） | 显式（时间戳 + 帧间隔） |
+| **存储结构** | KV Cache（滑动窗口） | 轨迹队列 + 特征缓冲区 |
 
-GMP 将历史融合复杂度从 $\mathcal{O}(H^2)$ 降至 $\mathcal{O}(h \times H)$：
+```python
+class TemporalEncoder:
+    """
+    自动驾驶时序编码器设计
+    借鉴 GMP 的隐式时序编码思路
+    """
+    def __init__(self, feature_dim, history_len=30, time_encoding="sinusoidal"):
+        self.feature_dim = feature_dim
+        self.history_len = history_len
+        self.time_encoding = time_encoding
 
-- **机器人**：$h=1$ 个 Query（当前时刻）vs $H=120$ 个历史 Key-Value
-- **自动驾驶**：$h=N$ 个目标 Query（如 100 个跟踪目标）vs $H=30$ 帧历史
+        if time_encoding == "sinusoidal":
+            # 方案1: Sinusoidal PE（GMP 隐式思路）
+            self.pe = self._build_sinusoidal_pe(history_len, feature_dim)
+        elif time_encoding == "learned":
+            # 方案2: 可学习的时间嵌入
+            self.pe = nn.Embedding(history_len, feature_dim)
+        elif time_encoding == "relative":
+            # 方案3: 相对时间编码（Δt 编码）
+            self.time_delta_net = MLP(input_dim=1, hidden=64, output=feature_dim)
 
-**借鉴思路**：每帧检测 $N$ 个目标，跨 $H$ 帧历史做交叉注意力，复杂度 $O(N \times H)$ 而非 $O((N \times H)^2)$。这使长时间历史融合在工程上可行。
+    def _build_sinusoidal_pe(self, max_len, d_model):
+        """Sinusoidal PE: 不同频率的正弦波编码时间步"""
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len).unsqueeze(1).float()
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model))
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        return pe  # [max_len, d_model]
 
-### 10.3 两阶段校准避免梯度冲突
+    def encode_frame(self, features, frame_idx, time_delta=None):
+        """
+        对单帧进行时序编码
+        features: [B, C, H, W] 当前帧特征
+        frame_idx: 当前帧在历史中的位置
+        time_delta: 距离上一帧的时间间隔（秒）
+        """
+        B = features.shape[0]
 
-GMP 的 Gate 校准流程对自动驾驶感知融合的启发：
+        # 空间特征压缩
+        spatial_tokens = self.vit_encoder(features)  # [B, N, C]
 
-1. **阶段一**：训练"常关"和"常开"两个极端策略
-2. **阶段二**：基于误差对比生成门控监督信号
-3. **阶段三**：冻结门控，重新训练策略
+        # 时间编码融合
+        if self.time_encoding == "sinusoidal":
+            # 方案1: 全局位置编码
+            time_emb = self.pe[frame_idx % self.history_len]  # [C]
+            time_emb = time_emb.unsqueeze(0).expand(B, -1)  # [B, C]
+            enhanced_tokens = spatial_tokens + time_emb.unsqueeze(1)
 
-**借鉴思路**：在自动驾驶中，可以定义"需要历史"的关键场景（如换道、交叉路口），用对比学习或辅助任务校准门控，而非端到端让其自由学习。
+        elif self.time_encoding == "relative":
+            # 方案3: 相对时间编码（更适合变帧率场景）
+            delta_emb = self.time_delta_net(time_delta)  # [B, C]
+            enhanced_tokens = spatial_tokens + delta_emb.unsqueeze(1)
 
-### 10.4 扩散噪声一致性的工程价值
+        return enhanced_tokens  # [B, N, C]
+```
+
+### 10.2 时空融合机制 / 时序融合机制
+
+GMP 的 Cross-Attention 历史融合机制是自动驾驶感知融合的核心参考：
+
+**GMP 的时序融合架构**：
+- **输入**：当前帧 DiT hidden states（Query）vs 历史 KV Cache
+- **机制**：Cross-Attention，非自注意力（历史之间不交互）
+- **复杂度**：$\mathcal{O}(h \times H)$ 而非 $\mathcal{O}(H^2)$
+
+**自动驾驶的时空融合设计**：
+
+```python
+class SpatiotemporalFusion:
+    """
+    自动驾驶时空融合模块
+    借鉴 GMP Cross-Attention 线性复杂度设计
+    """
+    def __init__(self, query_dim, kv_dim, num_heads=8):
+        self.cross_attn = nn.MultiheadAttention(
+            embed_dim=query_dim,
+            num_heads=num_heads,
+            batch_first=True
+        )
+        # 历史 KV 缓存
+        self.kv_cache = []  # List of [B, N_kv, D]
+        self.max_history = 30
+
+    def fuse(self, current_query, historical_features):
+        """
+        时序融合前向传播
+        current_query: [B, N_q, D] 当前帧 Query
+        historical_features: [B, H*N_kv, D] 历史帧级联特征
+        """
+        # 方法1: 直接拼接融合（GMP 原始方式）
+        fused = torch.cat([current_query, historical_features], dim=1)
+        # 通过交叉注意力让 Query 与历史交互
+        attn_output, _ = self.cross_attn(
+            query=current_query,
+            key=historical_features,
+            value=historical_features
+        )
+        return attn_output
+
+    def fuse_with_temporal_weight(self, current_query, historical_features, temporal_weights):
+        """
+        方法2: 加权融合（融合权重随时间衰减）
+        temporal_weights: [B, H] 各历史帧的权重
+        """
+        B, H, N_kv, D = historical_features.shape
+        # 调整权重形状: [B, H, 1, 1]
+        weights = temporal_weights.view(B, H, 1, 1)
+
+        # 加权平均历史特征
+        weighted_history = (historical_features * weights).sum(dim=1)  # [B, N_kv, D]
+
+        # 与当前 Query 拼接
+        fused = torch.cat([current_query, weighted_history], dim=1)
+
+        attn_output, _ = self.cross_attn(
+            query=current_query,
+            key=fused,
+            value=fused
+        )
+        return attn_output
+
+    def update_cache(self, new_features):
+        """更新历史 KV 缓存（滑动窗口）"""
+        self.kv_cache.append(new_features)
+        if len(self.kv_cache) > self.max_history:
+            self.kv_cache.pop(0)  # 移除最老的帧
+
+    def get_historical_features(self):
+        """获取历史级联特征"""
+        if len(self.kv_cache) == 0:
+            return None
+        return torch.cat(self.kv_cache, dim=1)  # [B, H*N_kv, D]
+```
+
+### 10.3 Gated 机制设计
+
+GMP 的 Memory Gate 是决定"何时使用历史"的核心机制：
+
+**GMP 的门控设计**：
+- **结构**：MLP 二分类器（sigmoid 输出）
+- **输入**：当前帧图像 + 本体感受
+- **输出**：二值决策 $\mu_t \in \{0, 1\}$（或软门控版本）
+- **校准方式**：两阶段对比学习
+
+**自动驾驶的门控机制设计**：
+
+```python
+class TemporalGate:
+    """
+    时序融合门控模块
+    借鉴 GMP Memory Gate 的两阶段校准思路
+    """
+    def __init__(self, perception_dim, hidden_dim=64):
+        # 门控网络：判断当前是否需要融合历史
+        self.gate_mlp = nn.Sequential(
+            nn.Linear(perception_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 1),
+            nn.Sigmoid()
+        )
+
+        # 备选：可学习的二值阈值
+        self.threshold = nn.Parameter(torch.tensor(0.5))
+
+    def compute_gate(self, current_perception, ego_motion=None):
+        """
+        计算门控值
+        current_perception: [B, C] 当前帧 BEV 特征或感知状态
+        ego_motion: [B, 6] 自车运动（平移+旋转），用于判断场景变化程度
+        """
+        if ego_motion is not None:
+            # 融合自车运动信息（速度大、转弯急 → 更需要历史）
+            gate_input = torch.cat([current_perception, ego_motion], dim=-1)
+        else:
+            gate_input = current_perception
+
+        # 预测门控概率
+        gate_prob = self.gate_mlp(gate_input)  # [B, 1]
+
+        # 软门控版本
+        return gate_prob
+
+    def compute_binary_gate(self, current_perception, ego_motion=None):
+        """二值门控版本（GMP 方式）"""
+        gate_prob = self.compute_gate(current_perception, ego_motion)
+        return (gate_prob > self.threshold).float()  # {0, 1}
+
+
+class GatedTemporalFusion:
+    """
+    完整的门控时序融合模块
+    """
+    def __init__(self, feature_dim):
+        self.temporal_encoder = TemporalEncoder(feature_dim)
+        self.spatial_fusion = SpatiotemporalFusion(feature_dim)
+        self.gate = TemporalGate(feature_dim)
+
+    def forward(self, current_frame, historical_cache, ego_motion=None):
+        """
+        前向传播
+        current_frame: [B, C, H, W] 当前帧
+        historical_cache: List of 历史帧特征
+        ego_motion: [B, 6] 自车运动
+        """
+        # 1. 时序编码
+        current_tokens = self.temporal_encoder.encode_frame(current_frame, frame_idx=0)
+
+        # 2. 获取历史特征
+        if historical_cache is not None and len(historical_cache) > 0:
+            historical_tokens = torch.cat(historical_cache, dim=1)
+        else:
+            historical_tokens = None
+
+        # 3. 计算门控
+        gate_value = self.gate.compute_gate(
+            current_perception=current_tokens.mean(dim=1),  # [B, C]
+            ego_motion=ego_motion
+        )
+
+        # 4. 门控融合
+        if historical_tokens is not None:
+            # 当 gate_value > 0.5 时融合历史
+            fused = gate_value * self.spatial_fusion.fuse(current_tokens, historical_tokens)
+            fused = fused + (1 - gate_value) * current_tokens
+        else:
+            fused = current_tokens
+
+        return fused, gate_value
+```
+
+### 10.4 When / How / What 三问
+
+#### 10.4.1 什么时候触发时序融合？（When）
+
+| 触发条件 | GMP 机器人实现 | 自动驾驶实现 |
+|----------|--------------|-------------|
+| **基于误差对比** | 校准阶段计算 $\delta_t^{mem}$ vs $\delta_t$ | 感知不确定性估计 |
+| **基于场景检测** | — | 换道、交叉路口、紧急制动 |
+| **基于自车运动** | — | 速度变化率、转弯角度 |
+| **基于感知差异** | — | 当前帧 vs 历史帧的 BEV 特征差异 |
+
+```python
+def should_activate_temporal(perception_diff, ego_motion_change, scene_type):
+    """
+    判断是否触发时序融合
+    perception_diff: 当前帧与历史帧的感知差异
+    ego_motion_change: 自车运动变化（速度、加速度、转角）
+    scene_type: 场景类型（高速/城市/交叉路口）
+    """
+    # 触发条件组合
+    triggers = []
+
+    # 条件1: 感知差异大（新增目标、目标消失）
+    if perception_diff > 0.3:
+        triggers.append(1.0)
+
+    # 条件2: 自车运动变化剧烈（急刹、急转）
+    motion_change_norm = torch.norm(ego_motion_change, dim=-1)
+    if motion_change_norm > 0.5:
+        triggers.append(1.0)
+
+    # 条件3: 关键场景（换道、路口）
+    if scene_type in ["lane_change", "intersection", "emergency"]:
+        triggers.append(1.0)
+
+    # 满足任一条件则触发
+    return torch.any(torch.stack(triggers) > 0, dim=0)
+```
+
+#### 10.4.2 怎么设计时序模块？（How）
+
+| 设计维度 | GMP 方案 | 自动驾驶借鉴 |
+|----------|---------|-------------|
+| **存储结构** | KV Cache（滑动窗口） | 轨迹队列 + 特征缓冲区 |
+| **融合机制** | Cross-Attention | Cross-Attention 或门控加法 |
+| **复杂度控制** | $O(h \times H)$ | $O(N \times H)$ 目标数 × 历史帧数 |
+| **模块位置** | DiT 内部条件 | BEV 编码器后 / 感知头前 |
+
+#### 10.4.3 时序存什么历史？（What）
+
+| 历史内容 | GMP 存储 | 自动驾驶存储 |
+|----------|---------|-------------|
+| **视觉信息** | 图像 token（64 个/帧） | BEV 特征图（H × W grid） |
+| **运动信息** | 历史动作序列 | 自车轨迹 + 他车轨迹 |
+| **感知状态** | — | 检测框、跟踪 ID、语义地图 |
+| **时间信息** | 隐式位置 | 显式时间戳 + Δt |
+
+```python
+class HistoryBuffer:
+    """
+    自动驾驶时序历史缓冲区
+    """
+    def __init__(self, max_frames=30):
+        self.max_frames = max_frames
+
+        # 历史数据结构
+        self.bev_features = []      # BEV 特征图
+        self.ego_trajectory = []      # 自车轨迹 [x, y, theta, v]
+        self.obj_trajectories = []   # 他车轨迹 Dict[track_id -> [x, y, theta]]
+        self.timestamps = []         # 时间戳
+        self.semantic_map = []       # 语义地图（可选）
+
+    def update(self, bev, ego_state, obj_detections, timestamp, sem_map=None):
+        """更新历史缓冲区"""
+        self.bev_features.append(bev.detach().clone())
+        self.ego_trajectory.append(ego_state)
+        self.obj_trajectories.append(obj_detections)
+        self.timestamps.append(timestamp)
+        if sem_map is not None:
+            self.semantic_map.append(sem_map)
+
+        # 滑动窗口
+        if len(self.bev_features) > self.max_frames:
+            self.bev_features.pop(0)
+            self.ego_trajectory.pop(0)
+            self.obj_trajectories.pop(0)
+            self.timestamps.pop(0)
+            if self.semantic_map:
+                self.semantic_map.pop(0)
+
+    def get_temporal_features(self, frame_indices=None):
+        """获取指定帧的历史特征"""
+        if frame_indices is None:
+            frame_indices = list(range(len(self.bev_features)))
+
+        # 采样历史帧
+        bev_hist = torch.stack([self.bev_features[i] for i in frame_indices], dim=1)  # [B, H, C, H, W]
+
+        # 计算相对时间间隔
+        current_time = self.timestamps[-1]
+        time_deltas = [current_time - self.timestamps[i] for i in frame_indices]
+
+        return {
+            'bev_features': bev_hist,                    # [B, H, C, H, W]
+            'ego_trajectory': self.ego_trajectory[-1],    # 最新自车状态
+            'obj_trajectories': self.obj_trajectories,     # 所有跟踪目标
+            'time_deltas': time_deltas,                   # 相对时间
+        }
+```
+
+### 10.5 扩散噪声一致性的工程价值
 
 GMP 在训练和推理**均使用扩散噪声**，避免了 Diffusion Forcing 的训练-推理不一致问题。
 
