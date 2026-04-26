@@ -15,7 +15,43 @@
     "WorldModel/Epona-精读报告.md": {
       "interview_date": "20260425",
       "processed_at": "2026-04-25T10:01:33.689744"
+    },
+    "RL/PPO_精读报告.md": {
+      "interview_date": "20260426",
+      "processed_at": "2026-04-26T08:09:34.910704"
+    },
+    "RL/RAD_精读报告.md": {
+      "interview_date": "20260426",
+      "processed_at": "2026-04-26T08:09:34.910704"
+    },
+    "RL/FlowGRPO_精读报告.md": {
+      "interview_date": "20260426",
+      "processed_at": "2026-04-26T08:09:34.910704"
+    },
+    "VLA/π0.7_精读报告.md": {
+      "interview_date": "20260426",
+      "processed_at": "2026-04-26T08:09:34.910704"
+    },
+    "VLA/VISTA_精读报告.md": {
+      "interview_date": "20260426",
+      "processed_at": "2026-04-26T08:09:34.910704"
+    },
+    "WorldModel/Fast-WAM_精读报告.md": {
+      "interview_date": "20260426",
+      "processed_at": "2026-04-26T08:09:34.910704"
+    },
+    "WorldModel/Latent-WAM_精读报告.md": {
+      "interview_date": "20260426",
+      "processed_at": "2026-04-26T08:09:34.910704"
+    },
+    "WorldModel/DreamerAD-论文解读.md": {
+      "interview_date": "20260426",
+      "processed_at": "2026-04-26T08:09:34.910704"
+    },
+    "FM基础知识/FlashAttention-论文精读-arXiv2205.14135.md": {
+      "interview_date": "20260426",
+      "processed_at": "2026-04-26T08:09:34.910704"
     }
   },
-  "last_run": "20260425"
+  "last_run": "20260426"
 }
