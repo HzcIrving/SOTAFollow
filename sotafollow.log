@@ -8,10 +8,16 @@
 
 ## 📅 2026-04-27 (04-27) 🌟
 
+**🔬 FM**
+- [FM] MEM文件夹：去重自驾时序融合章节 + 调整章节顺序
+
+**⚙️ CONFIG**
+- [Config] sotafollow.log 纳入Git跟踪
+
 **🌳 COMMIT**
 - 📝 docs: 优化 README 风格 - emoji、快捷索引、子文件夹排版
 
-👥 **1 人** | 📝 **1 commits** | 📂 **0 files**
+👥 **1 人** | 📝 **3 commits** | 📂 **0 files**
 
 ---
 
