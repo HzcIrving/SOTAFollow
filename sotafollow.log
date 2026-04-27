@@ -1,0 +1,394 @@
+# 📖 SOTAFollow 更新日志
+
+> 🤖 自动生成 | [查看完整日志](./sotafollow.log)
+
+**快捷导航**: [📅 04-27](#📅-04-27) | [📅 04-26](#📅-04-26) | [📅 04-25](#📅-04-25) | [📅 04-24](#📅-04-24) | [📅 04-23](#📅-04-23) | [📅 04-22](#📅-04-22) | [📅 04-21](#📅-04-21)
+
+---
+
+## 📅 2026-04-27 (04-27) 🌟
+
+**🌳 COMMIT**
+- 📝 docs: 优化 README 风格 - emoji、快捷索引、子文件夹排版
+
+👥 **1 人** | 📝 **1 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-26 (04-26)
+
+**📚 DOCS**
+- [Docs] 更新2026年4月月度总结
+- [Docs] 更新2026年4月月度总结
+- [Docs] CLAUDE.md添加图注规范和自我改进学习章节
+- [Docs] 更新README日志目录
+- [Docs] 更新2026年4月月度总结
+
+**🛠️ TOOLS**
+- [Tools] SotaLogger重构：按天聚合日志 + README快捷索引
+- [Tools] 新增月度总结生成器 + 历史导入脚本
+- [Tools] 新增 SotaLogger 日志工具
+
+**🔬 FM**
+- [FM] MEM文件夹时序融合启示章节大幅扩充：PE编码、时空融合、门控机制完整伪代码
+- [FM] MEM文件夹添加自动驾驶时序融合启示章节
+- [FM] 新增MemoryVLA精读报告：感知-认知记忆银行，Cognition-Memory-Action框架
+
+**⚙️ CONFIG**
+- [Config] 添加 sotafollow.log 到 .gitignore
+
+👥 **1 人** | 📝 **12 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-25 (04-25)
+
+**🌍 WM**
+- [WorldModel] 新增：世界模型EP04_Motus石麻笔记（含15张配图）
+- [WorldModel] 新增：从表征学习角度看 Being-H0.7、Fast-WAM 与 π0.7
+
+👥 **3 人** | 📝 **5 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-24 (04-24)
+
+**🌳 COMMIT**
+- 'lingbot-va'
+- [FM基础知识] 更新非arXiv论文插图规范; 同步Being-H0.7架构图和潜在查询设计
+
+**🤖 VLA**
+- [VLA] 新增 VLA-JEPA 论文精读报告
+
+**💬 LLM**
+- [LLM] 新增DeepSeek-V4精读报告：百万token上下文高效注意力
+
+**🎯 RL**
+- [RL] 新增Near-Future Policy Optimization精读报告：𝒮=Q/V框架、近未来checkpoint辅助轨迹、AutoNPO自适应干预
+
+👥 **3 人** | 📝 **5 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-23 (04-23)
+
+**📚 DOCS**
+- [Docs] README索引添加Epona精读报告
+
+**🌍 WM**
+- [WorldModel] Epona精读报告：按CLAUDE.md格式重构，补全引用信息
+
+**🌳 COMMIT**
+- 新增 Being-H0.7 精读报告 + Epona
+- [FM基础知识] 新增VGGT精读报告：统一多任务3D重建Transformer
+
+**🤖 VLA**
+- [VLA] 删除Being-0精读报告（非目标论文）
+- [VLA] 新增Being-0精读报告(arXiv:2503.12533)：分层Agent框架，FM+Connector+技能库，84.4%任务完成率；含与Latent-WAM本质对比
+- [VLA] 新增DVGT-2精读报告：自动驾驶视觉几何Transformer
+
+**🎯 RL**
+- [RL] 完善XXPO系列算法精读报告：补充GMPO(arXiv:2507.20673)、GRPO准确引用、DAPO机构信息；check_latex_formula.py移入tools/
+
+**📦 ADD**
+- [整理] 批量整理：学习笔记重构 + 根目录清理
+
+**🎓 INTERVIEW**
+- [面筋] 重构RAD-2笔记：分离面试问答与技术详解
+
+👥 **3 人** | 📝 **14 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-22 (04-22)
+
+**🎯 RL**
+- [RL] XXPO系列算法精读报告：补全DAPO arXiv:2503.14476，GRPO待查证
+- [RL] 新增XXPO系列算法精读报告
+- [RL] 修复 FlowGRPO 公式：拆分过长公式提升可读性
+- [RL] 新增 PPO 精读报告
+
+**🤖 VLA**
+- [VLA] 新增VISTA精读报告：世界模型生成视觉子目标
+- [VLA] 修复 MINT DCT 公式语法：cos 后括号从 [] 改为 ()
+
+**🌳 COMMIT**
+- 更新CLAUDE.md：新增Andrej Karpathy行为准则
+- 批量添加Motivation章节：FM基础知识 + WorldModel部分
+- 修正CLAUDE.md和XXPO报告：删除幻觉内容
+- 更新CLAUDE.md：新增3项规范
+- 优化 GMP 精读报告：proofreader 校对 + 章节规范化 + 图片URL修复
+  _...还有 5 条_
+
+**⚡ OPT**
+- [优化] 精读报告MathJax及格式修复
+- [优化] MathJax公式格式修复：上下标括号规范化
+- [优化] 精读报告格式修复：移除Figure解析标签、统一Figure编号
+- [优化] GMP精读报告：MathJax公式（\(\)行内+83291块级），插入3张项目主页截图：任务概览、方法架构、注意力可视化
+- [优化] GMP精读报告：补全伪代码章节，补充Figure描述，对齐CLAUDE.md格式要求
+  _...还有 3 条_
+
+**📦 ADD**
+- [新增] mRoPE详解/Epona精读/RAD-2学习笔记/Fast-WAM学习笔记
+
+**🌍 WM**
+- [WorldModel] 补全 Latent-WAM 训练推理伪代码，符合标准格式
+- [WorldModel] Latent-WAM 精读报告（arXiv 2603.24581）
+
+**🔬 FM**
+- [FM] 新增MEM文件夹：Gated Memory Policy精读报告，详解时序融合模块
+- [FM] 修复 LoRA 公式：\mathbb{R} → \mathbf{R} GitHub 兼容性问题
+- [FM] 修复 LoRA 公式：大括号多余转义 + 创建 LaTeX 检查脚本
+
+**🐛 FIX**
+- [修复] Latent-WAM公式：\mathbf→\boldsymbol，复杂行内公式→displaymath，保留所有原始内容和图片
+- [修复] Latent-WAM：恢复5张图片，保留原始公式和LaTeX命令
+- [修复] Latent-WAM还原：恢复被删除的图片，保留原始公式
+- [修复] 全项目 \mathbb{R/S} → \mathbf{R/S} GitHub 兼容性
+- [修复] Latent-WAM公式：仅将$$转为\(\)，还原被破坏的LaTeX命令
+  _...还有 2 条_
+
+**📚 DOCS**
+- RL: 丰满 PPO 文档 GAE 内容，添加推导过程和流程图
+
+**🎓 INTERVIEW**
+- [面筋] 新增GRPO_vs_SFT面试题笔记
+
+👥 **2 人** | 📝 **39 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-21 (04-21)
+
+**🌳 COMMIT**
+- 添加 self-improvement skill 经验固化文件
+- 优化 RAD/RAD-2 精读报告：proofreader 校对 + 公式规范化 + 细节补充
+- del useless pics
+- 更新Content
+- [RADv1] 地平线
+  _...还有 6 条_
+
+**📚 DOCS**
+- 更新README面筋目录：补充新增文档索引
+- 更新README：补充新增文档
+- merge: 合入 main 分支最新更新（π0.7/RoPE/文档修复等）
+
+**🌍 WM**
+- [WorldModel] 重写世界模型视频笔记-基于字幕时间轴-零幻觉
+- [WorldModel] 全面更新世界模型视频笔记-硅谷101-含详细时间戳
+
+👥 **4 人** | 📝 **18 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-20 (04-20)
+
+**🌍 WM**
+- [WorldModel] 新增硅谷101视频笔记：世界模型定义/路线/实践深度解读（B站 2026）
+
+**🌳 COMMIT**
+- [FM基础知识] 更新 LingBot-Map 精读报告为DreamerAD标准格式
+- [FM基础知识] 新增 LingBot-Map 流式3D重建精读报告
+- [FM基础知识] 新增 TiTok-1D-Tokenization 学习笔记
+
+**🎓 INTERVIEW**
+- [面筋] 新增智元RL技术凉经：PPO/SAC/CQL/动作块/仿真RL
+
+**🎯 RL**
+- [RL] FlowGRPO 精读：新增图文并茂的论文原图解析（Figure 1-3 + Table 1-2 深度解读）
+- [RL] 优化 FlowGRPO 精读报告公式格式，去除多余换行
+- [RL] 精读 FlowGRPO 原论文（Jie Liu, arXiv:2505.05470）：ODE-to-SDE 完整推导 + Denoising Reduction
+- [RL] 新增 SAGE-GRPO & FlowGRPO 精读报告：ODE-to-SDE 精确探索
+
+👥 **2 人** | 📝 **9 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-19 (04-19)
+
+**🌳 COMMIT**
+- 修复精读报告图片和公式问题
+- [RoPE] 重写：删除虚假引用，补充背景与motivation
+- [π0.7] 使用论文原图重写图片章节
+- [π0.7] 修正图片引用为官方URL，删除非论文原图
+- [π0.7] 更新图片引用为本地路径，新增架构图
+  _...还有 8 条_
+
+👥 **4 人** | 📝 **14 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-18 (04-18)
+
+**🌳 COMMIT**
+- pe V1
+
+👥 **1 人** | 📝 **1 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-17 (04-17)
+
+**🌳 COMMIT**
+- [docs] 更新: 面筋/LLM/LLM面试深度知识点-五大模块详解.md
+
+**🤖 VLA**
+- [VLA] π0.7官网原图11张（PI website/_next/image CDN）
+- [VLA] π0.7精读报告v3：引用PI官网原图+附录详细总结+KnowHow论文方法论
+- [VLA] π0.7精读报告v2：新增内容自检清单+图片获取经验总结
+- [VLA] MINT精读报告：新增图片获取经验+内容自检清单+数据校核
+- [VLA] 新增π0.7精读报告 + MINT论文pdf
+
+👥 **2 人** | 📝 **6 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-16 (04-16)
+
+**🤖 VLA**
+- [VLA] MINT精读：将Fig.1-2图片URL替换为GitHub Raw格式
+- [VLA] MINT精读：插入论文Fig.1-2原图(DreamerAD风格)，Fig.3-6保留ASCII示意图
+- [VLA] 全面升级MINT精读：补伪代码+原图+Appendix+DCT基础文档+README双表更新
+
+**🌳 COMMIT**
+- [调整] 移动MINT至VLA目录，更新README索引（VLA+FM基础知识双表）
+- [FM基础知识] 新增 MINT 精读：频域多尺度动作Tokenizer，One-Shot Intent迁移
+- [索引] 更新FM基础知识目录，新增大模型Roadmap和Kimi AR精读
+- [FM基础知识] 新增大模型Roadmap + Kimi Attention Residuals精读报告
+- fix: 修复LoRA论文中的LaTeX公式格式
+  _...还有 1 条_
+
+👥 **3 人** | 📝 **11 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-15 (04-15)
+
+**🌳 COMMIT**
+- [FM基础知识] 新增WorldModel训练Loss设计详解：ELBO/KL/JEPA/LPIPS/VQ-VAE
+- Fix image references: replace local assets with arXiv URLs
+- Fix Uni-World VLA filename typo (space → underscore)
+- Add TiTok to FM基础知识 section
+- 更新claude.md
+  _...还有 1 条_
+
+**📚 DOCS**
+- 更新README，补充LLM面试深度知识点文档链接
+- [面筋] 更新README目录，补充MoE_RL文档索引
+
+**🎓 INTERVIEW**
+- [面筋] MoE_RL_训推不一致：Routing Replay+GSPO解析
+- [面筋] MoE做RL训推不一致：知识点解析+面试回答
+- [面筋] 新增子文化搜集目录，含RL/LLM/VLA/WM四个分类
+
+**🤖 VLA**
+- [VLA] 修正 Vega 图片位置：图2移至5.1架构章节
+
+👥 **2 人** | 📝 **12 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-14 (04-14)
+
+**🤖 VLA**
+- [VLA] 修复 Vega 精读报告图片位置，对应章节插入
+- [VLA] Add Vega 精读报告（图文版）
+
+**📚 DOCS**
+- [Docs] 更新 README 目录，添加 Vega 论文索引
+
+👥 **1 人** | 📝 **3 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-13 (04-13)
+
+**🌳 COMMIT**
+- [FM基础知识] 升级TiTok精读报告：新增伪代码+原图+完整方法详解
+- 新增TiTok论文精读：1D图像Tokenizer，32 tokens生成SOTA
+- 新增FM基础知识：VQVAE视觉Tokenizer、WorldModel-VLA自回归框架
+- 更新README目录：新增Fast-WAM、FM基础知识分类
+
+👥 **1 人** | 📝 **4 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-12 (04-12)
+
+**🌳 COMMIT**
+- Add Actuate 2025 video report and update DreamerAD info
+- Fix unverified data in towel folding experiment - remove fabricated percentages
+- Fix data errors in Fast-WAM reading report
+- Fix figure placements in LeWorldModel and Fast-WAM reports
+- Add paper figures to Fast-WAM reading report
+  _...还有 1 条_
+
+👥 **1 人** | 📝 **6 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-11 (04-11)
+
+**🌳 COMMIT**
+- Add LeWorldModel reading report to WorldModel directory
+- del useless markdown
+
+👥 **1 人** | 📝 **2 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-10 (04-10)
+
+**🌳 COMMIT**
+- Move MV-VDP report to WorldModel directory
+- Add MV-VDP 精读报告 and update README
+
+👥 **1 人** | 📝 **2 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-09 (04-09)
+
+**🌳 COMMIT**
+- Add AI Agent daily report 2026-04-09
+- Update GitHub daily report with enhanced formatting
+- Add GitHub daily report 2026-04-09
+- Fix CLAUDE.md and README.md content swap
+- Rename contents.md to README.md
+  _...还有 2 条_
+
+👥 **1 人** | 📝 **7 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-08 (04-08)
+
+**🌳 COMMIT**
+- new wiki
+
+👥 **1 人** | 📝 **1 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-06 (04-06)
+
+**🌳 COMMIT**
+- Use raw.githubusercontent.com URLs for cross-platform image display
+- Revert to local image paths for cross-platform compatibility
+- Embed DreamerAD images as base64 for GitHub and Zhihu compatibility
+- Switch DreamerAD images to jsDelivr CDN for Zhihu compatibility
+
+👥 **1 人** | 📝 **4 commits** | 📂 **0 files**
+
+---
+
+## 📅 2026-04-03 (04-03)
+
+**🌳 COMMIT**
+- Add local images for Zhihu compatibility
+- Add optimized DreamerAD paper interpretation to WorldModel
+- Initial commit: SOTA papers tracking structure
+
+👥 **1 人** | 📝 **3 commits** | 📂 **0 files**
+
+---

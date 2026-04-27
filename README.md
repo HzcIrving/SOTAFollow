@@ -1,92 +1,180 @@
-# 论文目录索引
+# 🚀 SOTAFollow - AI/机器人前沿论文追踪
 
-## 面筋
-
-> 子文化搜集与碎碎念
-
-| 分类 | 简介 | 文档 |
-|------|------|------|
-| [RL](./面筋/RL/) | 强化学习相关 | [MoE_RL_训推不一致](./面筋/RL/MoE_RL_训推不一致.md)（MoE做RL训练-推理不一致）、[智元RL技术凉经](./面筋/RL/智元RL技术凉经.md)（RL后训练面试题）、[GRPO vs SFT数据差异](./面筋/RL/GRPO_vs_SFT训练数据差异.md)（SFT与GRPO数据需求、难度分布、格式差异） |
-| [LLM](./面筋/LLM/) | 大语言模型相关 | [LLM面试深度知识点-五大模块详解](./面筋/LLM/LLM面试深度知识点-五大模块详解.md)、[LLM面试入门知识点](./面筋/LLM/LLM面试入门知识点.md) |
-| [VLA](./面筋/VLA/) | Vision-Language-Action 相关 | （待填充） |
-| [WM](./面筋/WM/) | WorldModel 相关 | （待填充） |
+> 分类管理 SOTA（State-of-the-Art）论文，覆盖 VLA、WorldModel、RL、LLM 等领域
 
 ---
 
-## VLA
+## 📑 快捷索引
 
-| 论文 | 会议/年份 | 核心贡献 | 文档 |
-|------|----------|----------|------|
-| Vega | arXiv 2026 | 统一 Vision-Language-World-Action 模型，自然语言指令驾驶，InstructScene 100K 数据集，NAVSIM EPDMS 89.4 SOTA | [Vega_精读报告.md](./VLA/Vega_精读报告.md) |
-| Uni-World VLA | ECCV 2026 | 交错式闭环 VLA，统一生成未来帧+动作 tokens | [→ WorldModel](./WorldModel/Uni-World_VLA-论文精读-ECCV2026.md) |
-| DVGT-2 | arXiv 2026 | Vision-Geometry-Action 端到端自动驾驶，O(1) 帧复杂度，NAVSIM PDMS 90.3 | [DVGT-2_精读报告.md](./VLA/DVGT-2_精读报告.md) |
-| Actuate 2025 | 视频 2026 | Sergey Levine & Liyiming Ke：第二代 VLA 与机器人 Foundation Model，RL Post-training 是模仿学习的关键补充 | [Actuate2025_SergeyLevine_精读报告.md](./VLA/Actuate2025_SergeyLevine_精读报告.md) |
-| **MINT** | arXiv 2026 | 上交大：频域多尺度动作Tokenizer（SDAT），解耦Intent Token与Execution Tokens，One-Shot跨任务迁移超越Fine-tuning 60pp，LIBERO 98.3% SOTA | [MINT-论文精读-arXiv2602.08602.md](./VLA/MINT/MINT-论文精读-arXiv2602.08602.md) |
-| **π0.7** | PI 2026 | 多样化上下文条件化，通用模型无需微调匹配专用RL，零样本跨本体衬衫折叠达到人类专家水平，~5B参数（Gemma3 4B + 860M Action Expert） | [π0.7_精读报告.md](./VLA/π0.7_精读报告.md) |
-| **VISTA** | arXiv 2026 | 世界模型生成视觉子目标，层次化VLA架构解决泛化瓶颈，未见场景14%→69%提升 | [VISTA_精读报告.md](./VLA/VISTA_精读报告.md) |
-| **VLA-JEPA** | arXiv 2026 | JEPA风格VLA预训练，无泄露状态预测，时序因果注意力，流匹配动作头 | [VLA-JEPA_论文精读-arXiv2602.10098.md](./VLA/VLA-JEPA_论文精读-arXiv2602.10098.md) |
-| **MemoryVLA** | arXiv 2025 | 上交大&上海AI Lab：感知-认知记忆框架(PCM)，工作记忆(LSTM)+情景记忆(RAG)，LIBERO/CALVIN SOTA | [MemoryVLA_论文精读-arXiv2508.19236.md](./VLA/MemoryVLA_论文精读-arXiv2508.19236.md) |
+| 🏠 首页 | 📚 [VLA](#-vla) | 🌍 [WorldModel](#-worldmodel) | 🎯 [RL](#-rl) | 🧠 [LLM](#-llm) | 🔧 [FM基础](#-fm基础知识) | 💼 [面筋](#-面筋) |
+|:------:|:------:|:------:|:------:|:------:|:------:|:------:|
+| [FM基础](#-fm基础知识) | [VLA](#-vla) | [WorldModel](#-worldmodel) | [RL](#-rl) | [LLM](#-llm) | [日报](./RL/日报/) | [DailyAgent](#-dailyagent) |
 
-## WorldModel
+---
 
-| 论文 | 会议/年份 | 核心贡献 | 文档 |
-|------|----------|----------|------|
-| Uni-World VLA | ECCV 2026 | 交错式世界建模与规划，冻结幻觉问题，NAVSIM PDMS 89.4 | [Uni-World VLA-论文精读-ECCV2026.md](./WorldModel/Uni-World_VLA-论文精读-ECCV2026.md) |
-| MV-VDP | arXiv 2026 | 多视角视频扩散策略，视频基础模型联合预测 RGB 视频 + 热力图，5 demos Meta-World 89.1% | [MV-VDP_精读报告.md](./WorldModel/MV-VDP_精读报告.md) |
-| LeWorldModel | arXiv 2026 | 首个端到端 JEPA 世界模型，SIGReg 正则器防崩溃，15M 参数单 GPU 可训，48x 规划加速 | [LeWorldModel-论文精读报告.md](./WorldModel/LeWorldModel-论文精读报告.md) |
-| DreamerAD | arXiv 2026 | 基于解析世界模型的自动驾驶车辆控制，Shortcut Forcing 80× 加速，EPDMS 87.7 SOTA | [DreamerAD-论文解读.md](./WorldModel/DreamerAD-论文解读.md) |
-| **Epona** | arXiv 2025 | 自回归扩散世界模型，解耦时空因子分解 + Chain-of-Forward 训练，分钟级视频预测 + 实时轨迹规划 | [Epona-精读报告.md](./WorldModel/Epona-精读报告.md) |
-| Fast-WAM | arXiv 2026 | 北大&华为：World Action Model 测试时想象是否必要？端到端规划加速 48× | [Fast-WAM_精读报告.md](./WorldModel/Fast-WAM_精读报告.md) |
-| Latent-WAM | arXiv 2026 | 中科院&长安汽车：SCWE 16-query 场景压缩 + WorldMirror 几何蒸馏 + DLWM 因果世界建模，感知自由 89.3 EPDMS SOTA，104M 参数 | [Latent-WAM_精读报告.md](./WorldModel/Latent-WAM_精读报告.md) |
-| **Being-H0.7** | 2026 | BeingBeyond：潜在世界动作模型，先验-后验双分支联合对齐，MoT 高效实现，200K 小时自我中心视频预训练，6 仿真基准 SOTA | [Being-H0.7_精读报告.md](./WorldModel/Being-H0.7_精读报告.md) |
-| **从表征学习角度看 Being-H0.7、Fast-WAM 与 π0.7** | 微信公众号 2026 | 具身智能之心×崔森老师：从表征学习视角审视 VLA 与 WAM 的收敛共识——中间表征需要动作+未来关键帧双重监督 | [→ 链接](./WorldModel/从表征学习角度看_Being-H0.7_Fast-WAM与π0.7.md) |
-| **世界模型 EP04：Motus（石麻笔记）** | 微信公众号 2026 | 渣大米 × 谭恒楷博士：Unified World Model，同时建模 VGM/IDM/WM/VLA 四种关系，多 expert joint attention 框架，数据金字塔六层设计 | [→ 链接](./WorldModel/世界模型EP04_Motus_石麻笔记.md) |
-| **硅谷101-世界模型深度解读** | B站 2026 | 系统性拆解世界模型定义、三层研发结构（感知→预测→控制）、四大技术路线（视频生成/3D空间智能/智能体训练/JEPA），深度分析对机器人/自动驾驶/内容产业的颠覆，附 LeCun/李飞飞等关键人物观点 | [世界模型_视频笔记_硅谷101.md](./WorldModel/世界模型_视频笔记_硅谷101.md) |
+## 🤖 VLA
 
-## RL
+> Vision-Language-Action Model · 视觉-语言-动作模型
 
-| 论文 | 会议/年份 | 核心贡献 | 文档 |
-|------|----------|----------|------|
-| **XXPO 系列算法** | — | PPO/GRPO/GSPO/DAPO/GMPO 算法精读：原理详解、对比分析、演化路径 | [XXPO系列算法精读报告.md](./RL/XXPO系列算法精读报告.md) |
-| **FlowGRPO** | arXiv 2025 | 首个将 GRPO 引入 Flow Matching 的工作：marginal-preserving ODE-to-SDE 转换（推导 reverse-time SDE 并离散化）+ Denoising Reduction（训练10步/推理全步），SD3.5-M GenEval 63%→95%，几乎无 reward hacking | [FlowGRPO_精读报告.md](./RL/FlowGRPO_精读报告.md) |
-| PPO 精读 | - | 策略优化算法详解：Clipped Surrogate、GAE 优势估计、与 TRPO/SAC/DQN 对比、Python 伪代码、面试常见问题 | [PPO_精读报告.md](./RL/PPO_精读报告.md) |
-| **RAD** | NeurIPS 2025 | 首个3DGS-RL端到端自动驾驶训练框架，RL+IL协同优化解决因果混淆和开环gap，碰撞率降低3倍 | [RAD_精读报告.md](./RL/RAD_精读报告.md) |
-| **RAD-2** | arXiv 2026 | Generator-Discriminator框架：扩散生成器+RL判别器，TCR-GRPO+On-policy Gen Opt算法，BEV-Warp高吞吐仿真，碰撞率较扩散规划器降低56% | [RAD-2_精读报告.md](./RL/RAD-2_精读报告.md) |
-| **NPO / AutoNPO** | arXiv 2026 | 近未来策略优化：𝒮=Q/V有效学习信号最大化，近未来checkpoint提供高质量+低方差辅助轨迹，Qwen3-VL-8B Avg 57.88→63.15，AutoNPO自适应干预 | [Near-Future_Policy_Optimization_精读报告.md](./RL/Near-Future_Policy_Optimization_精读报告.md) |
+| 论文 | 年份 | 核心贡献 | 文档 |
+|:-----|:----:|:---------|:-----|
+| **Vega** | 2026 | 统一 Vision-Language-World-Action，InstructScene 100K，NAVSIM EPDMS 89.4 SOTA | [精读](./VLA/Vega_精读报告.md) |
+| **Uni-World VLA** | ECCV 2026 | 交错式闭环 VLA，统一生成未来帧+动作 tokens | [精读](./WorldModel/Uni-World_VLA-论文精读-ECCV2026.md) |
+| **DVGT-2** | 2026 | Vision-Geometry-Action 端到端，O(1) 帧复杂度，PDMS 90.3 | [精读](./VLA/DVGT-2_精读报告.md) |
+| **MINT** ⭐ | 2026 | 频域多尺度动作Tokenizer（SDAT），LIBERO 98.3% SOTA | [精读](./VLA/MINT/MINT-论文精读-arXiv2602.08602.md) |
+| **π0.7** ⭐ | 2026 | 多样化上下文条件化，零样本跨本体衬衫折叠，~5B | [精读](./VLA/π0.7_精读报告.md) |
+| **VISTA** | 2026 | 世界模型生成视觉子目标，未见场景 14%→69% | [精读](./VLA/VISTA_精读报告.md) |
+| **VLA-JEPA** | 2026 | JEPA风格VLA预训练，时序因果注意力，流匹配动作头 | [精读](./VLA/VLA-JEPA_论文精读-arXiv2602.10098.md) |
+| Actuate 2025 | 2025 | Sergey Levine & Liyiming Ke：RL Post-training 是关键补充 | [精读](./VLA/Actuate2025_SergeyLevine_精读报告.md) |
 
-## FM基础知识
+---
+
+## 🌍 WorldModel
+
+> World Model · 世界模型 · 自动驾驶
+
+| 论文 | 年份 | 核心贡献 | 文档 |
+|:-----|:----:|:---------|:-----|
+| **Being-H0.7** ⭐ | 2026 | 先验-后验双分支对齐，MoT 高效实现，6 仿真 SOTA | [精读](./WorldModel/Being-H0.7_精读报告.md) |
+| **Latent-WAM** ⭐ | 2026 | SCWE 16-query 压缩 + WorldMirror 几何蒸馏，感知自由 89.3 | [精读](./WorldModel/Latent-WAM_精读报告.md) |
+| **Epona** | 2025 | 自回归扩散世界模型，Chain-of-Forward 训练 | [精读](./WorldModel/Epona-精读报告.md) |
+| **Fast-WAM** | 2026 | 测试时想象是否必要？端到端规划加速 48× | [精读](./WorldModel/Fast-WAM_精读报告.md) |
+| **Uni-World VLA** | ECCV 2026 | 交错式世界建模，冻结幻觉问题，PDMS 89.4 | [精读](./WorldModel/Uni-World_VLA-论文精读-ECCV2026.md) |
+| MV-VDP | 2026 | 多视角视频扩散策略，Meta-World 89.1% | [精读](./WorldModel/MV-VDP_精读报告.md) |
+| LeWorldModel | 2026 | 首个端到端 JEPA 世界模型，48x 规划加速 | [精读](./WorldModel/LeWorldModel-论文精读报告.md) |
+| DreamerAD | 2026 | 解析世界模型，Shortcut Forcing 80× 加速 | [精读](./WorldModel/DreamerAD-论文解读.md) |
+
+### 📝 深度解读
+
+| 主题 | 文档 |
+|:-----|:-----|
+| 从表征学习角度看 Being-H0.7、Fast-WAM 与 π0.7 | [链接](./WorldModel/从表征学习角度看_Being-H0.7_Fast-WAM与π0.7.md) |
+| 世界模型 EP04：Motus（石麻笔记） | [链接](./WorldModel/世界模型EP04_Motus_石麻笔记.md) |
+| 硅谷101-世界模型深度解读 | [笔记](./WorldModel/世界模型_视频笔记_硅谷101.md) |
+
+---
+
+## 🎯 RL
+
+> Reinforcement Learning · 强化学习
+
+| 论文 | 年份 | 核心贡献 | 文档 |
+|:-----|:----:|:---------|:-----|
+| **NPO / AutoNPO** ⭐ | 2026 | 近未来策略优化，Qwen3-VL-8B 57.88→63.15 | [精读](./RL/Near-Future_Policy_Optimization_精读报告.md) |
+| **XXPO 系列** | — | PPO/GRPO/GSPO/DAPO/GMPO 算法全景对比 | [精读](./RL/XXPO系列算法精读报告.md) |
+| **RAD** | NeurIPS 2025 | 首个3DGS-RL端到端，碰撞率降低3倍 | [精读](./RL/RAD_精读报告.md) |
+| **RAD-2** | 2026 | 扩散生成器+RL判别器，碰撞率降低56% | [精读](./RL/RAD-2_精读报告.md) |
+| **FlowGRPO** | 2025 | 首个 GRPO + Flow Matching，SD3.5 63%→95% | [精读](./RL/FlowGRPO_精读报告.md) |
+| PPO 精读 | — | Clipped Surrogate、GAE、Python 伪代码 | [精读](./RL/PPO_精读报告.md) |
+
+### 📅 日报
+
+| 日期 | 内容 |
+|:-----|:-----|
+| [RL 日报](./RL/日报/) | 强化学习前沿每日追踪 |
+
+---
+
+## 🧠 LLM
+
+> Large Language Model · 大语言模型
+
+| 论文 | 年份 | 核心贡献 | 文档 |
+|:-----|:----:|:---------|:-----|
+| **DeepSeek-V4** | 2025 | CSA+HCA 混合稀疏注意力，1M token 上下文 | [精读](./LLM/DeepSeek-V4_论文精读-arXiv2503.24978.md) |
+
+---
+
+## 🔧 FM基础知识
+
+> Foundation Model · 基础模型知识详解
+
+### 📂 核心模块
+
+| 模块 | 主题 | 文档 |
+|:----:|:-----|:-----|
+| 🧩 **Tokenizer** | TiTok 统一视觉 Tokenizer、VQVAE、1D Tokenization | [详情](#tokenizer) |
+| ⚡ **注意力** | FlashAttention、RoPE/3DPE/mRoPE、Kimi Attention Residuals | [详情](#注意力机制) |
+| 🎛️ **微调** | LoRA 参数高效微调、ZeRO 优化器 | [详情](#微调优化) |
+| 🧠 **世界模型** | 自回归框架、训练 Loss 设计 | [详情](#世界模型) |
+| 📍 **位置编码** | RoPE、3DPE、mRoPE（DVGT-2 时序融合） | [详情](#位置编码) |
+| 🧩 **记忆机制** | MEM/GMP、MemoryVLA | [详情](#记忆机制) |
+
+### 📄 详细列表
 
 | 主题 | 简介 | 文档 |
-|------|------|------|
-| **大模型 Roadmap** | LLM 基础知识全景图：Transformer架构、主流模型、预训练、后训练、量化压缩、MoE、RAG&Agent、部署加速、模型评估、其他结构（SSM/Mamba等） | [大模型Roadmap.md](./FM基础知识/大模型Roadmap.md) |
-| TiTok | 统一视觉 Tokenizer，1D离散化 + VQ-GAN，SoTA 图像重建 + 视频理解 | [TiTok-论文精读-arXiv2406.07550.md](./FM基础知识/TiTok-论文精读-arXiv2406.07550.md) |
-| TiTok-1D Tokenization | 图像 1D Tokenization 学习笔记：信息密度自适应分配、背景压缩、主体细节精雕 | [TiTok-1D-Tokenization-学习笔记.md](./FM基础知识/TiTok-1D-Tokenization-学习笔记.md) |
-| VQVAE 视觉 Tokenizer | Codebook 机制、视觉表征学习、World Model 视觉编码器 | [VQVAE视觉Tokenizer详解.md](./FM基础知识/VQVAE视觉Tokenizer详解.md) |
-| World Model / VLA 自回归框架 | 掩码设计、Action Token、VLA 与 World Model 结合的自回归范式 | [WorldModel-VLA自回归框架详解.md](./FM基础知识/WorldModel-VLA自回归框架详解.md) |
-| LoRA (参数高效微调) | Low-Rank Adaptation 原始论文精读，低秩适应机制、缩放因子设计 | [LoRA-论文精读-arXiv2106.09685.md](./FM基础知识/LoRA-论文精读-arXiv2106.09685.md) |
-| FlashAttention | IO 感知的精确注意力算法，分块计算 + 重新计算技术 | [FlashAttention-论文精读-arXiv2205.14135.md](./FM基础知识/FlashAttention-论文精读-arXiv2205.14135.md) |
-| FlashAttention-2 | 改进的并行性和工作分配，循环顺序调换，HBM 访问进一步优化 | [FlashAttention2-论文精读-arXiv2307.08691.md](./FM基础知识/FlashAttention2-论文精读-arXiv2307.08691.md) |
-| ZeRO 优化器 | 零冗余优化器，数据并行状态分区，万亿参数模型训练 | [ZeRO-论文精读-sc20.md](./FM基础知识/ZeRO-论文精读-sc20.md) |
-| World Model 训练 Loss 设计 | ELBO / KL Balancing / JEPA / LPIPS / VQ-VAE Loss 详解，含主流 SOTA 工作Loss汇总 | [WorldModel训练Loss设计详解.md](./FM基础知识/WorldModel训练Loss设计详解.md) |
-| **DCT（离散余弦变换）** | 频域信号处理基础：DCT-II定义、频率物理含义、与FFT对比，及其在MINT频域解耦中的作用 | [DCT（离散余弦变换）详解.md](./FM基础知识/DCT（离散余弦变换）详解.md) |
-| **Kimi Attention Residuals** | Moonshot AI：跨层选择性注意力残差连接，相同 Loss 下节省 25% 计算资源，Infra 是结构创新上限 | [Kimi_Attention_Residuals_精读报告.md](./FM基础知识/Kimi_Attention_Residuals_精读报告.md) |
-| **RoPE / 3DPE / mRoPE** | 位置编码技术详解：Sinusoidal、Learned、ALiBi、RoPE、2D/3DPE、mRoPE（DVGT-2 时序融合） | [RoPE及3DPE技术详解.md](./FM基础知识/RoPE及3DPE技术详解.md) |
-| **MEM（记忆机制）** | Gated Memory Policy：学习何时/召回什么记忆、Cross-Attention 时序融合、Diffusion Noise 增强、KV Cache 高效推理 | [MEM/GMP_精读报告.md](./FM%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/MEM/GMP_%E7%B2%BE%E8%AF%BB%E6%8A%A5%E5%91%8A.md) |
-| **流式三维重建 GCT** | Ant Group：几何上下文注意力替代全连接注意力，ETH3D 98.98% F1 + 20 FPS，突破长序列漂移瓶颈 | [流式三维重建-几何上下文Transformer-精读报告.md](./FM基础知识/流式三维重建-几何上下文Transformer-精读报告.md) |
-| PETR | 自动驾驶 3D 检测：3D 位置编码融合相机几何，DETR 范式端到端检测 | [PETR-论文精读.md](./FM基础知识/PETR-论文精读.md) |
-| PETR V2 | PETR 改进：Feature-Guided Position Encoding、3D 坐标对齐时序融合 | [PETR V2-论文精读.md](./FM基础知识/PETR%20V2-论文精读.md) |
+|:-----|:-----|:-----|
+| **大模型 Roadmap** | Transformer、MoE、量化、RAG、部署全景图 | [详情](./FM基础知识/大模型Roadmap.md) |
+| **TiTok** | 统一视觉 Tokenizer，1D 离散化 + VQ-GAN | [精读](./FM基础知识/TiTok-论文精读-arXiv2406.07550.md) |
+| **TiTok-1D** | 信息密度自适应分配、背景压缩、主体细节 | [笔记](./FM基础知识/TiTok-1D-Tokenization-学习笔记.md) |
+| **VQVAE** | Codebook 机制、视觉表征学习 | [详解](./FM基础知识/VQVAE视觉Tokenizer详解.md) |
+| **自回归框架** | 掩码设计、Action Token、VLA 结合 | [详解](./FM基础知识/WorldModel-VLA自回归框架详解.md) |
+| **LoRA** | Low-Rank Adaptation、低秩适应机制 | [精读](./FM基础知识/LoRA-论文精读-arXiv2106.09685.md) |
+| **FlashAttention** | IO 感知、分块计算 + 重新计算 | [精读](./FM基础知识/FlashAttention-论文精读-arXiv2205.14135.md) |
+| **FlashAttention-2** | 并行性改进、循环顺序调换 | [精读](./FM基础知识/FlashAttention2-论文精读-arXiv2307.08691.md) |
+| **ZeRO** | 零冗余优化器、数据并行分区 | [精读](./FM基础知识/ZeRO-论文精读-sc20.md) |
+| **World Model Loss** | ELBO / KL Balancing / JEPA / LPIPS | [详解](./FM基础知识/WorldModel训练Loss设计详解.md) |
+| **DCT** | 频域信号处理基础 | [详解](./FM基础知识/DCT（离散余弦变换）详解.md) |
+| **RoPE / 3DPE / mRoPE** | 位置编码技术详解 | [详解](./FM基础知识/RoPE及3DPE技术详解.md) |
+| **MEM（记忆机制）** | Gated Memory Policy、MemoryVLA | [精读](./FM基础知识/MEM/GMP_精读报告.md)、[精读](./FM基础知识/MEM/MemoryVLA_精读报告.md) |
+| **GCT** | 几何上下文注意力，ETH3D 98.98% F1 | [精读](./FM基础知识/流式三维重建-几何上下文Transformer-精读报告.md) |
+| **PETR** | 3D 检测：3D 位置编码融合相机几何 | [精读](./FM基础知识/PETR-论文精读.md) |
+| **PETR V2** | Feature-Guided Position Encoding、时序融合 | [精读](./FM基础知识/PETR%20V2-论文精读.md) |
 
-## LLM
+---
 
-| 论文 | 会议/年份 | 核心贡献 | 文档 |
-|------|----------|----------|------|
-| **DeepSeek-V4** | arXiv 2025 | CSA+HCA混合稀疏注意力，1M token上下文仅27% FLOPs+10% KV Cache，mHC流形约束超连接，Muon优化器，FP4 QAT | [DeepSeek-V4_论文精读.md](./LLM/DeepSeek-V4_论文精读-arXiv2503.24978.md) |
+## 💼 面筋
 
-## DailyAgent
+> 面试知识点整理 · 子文化搜集与碎碎念
 
-> AI 工具使用技巧、Agent 工作流、效率提升策略
+### 📂 分类索引
+
+| 分类 | 简介 | 路径 |
+|:----:|:-----|:-----|
+| 🎯 **RL** | 强化学习面试相关 | [查看](./面筋/RL/) |
+| 🧠 **LLM** | 大语言模型面试相关 | [查看](./面筋/LLM/) |
+| 🤖 **VLA** | Vision-Language-Action 面试相关 | [查看](./面筋/VLA/) |
+| 🌍 **WM** | WorldModel 面试相关 | [查看](./面筋/WM/) |
+
+### 📄 热门文档
 
 | 主题 | 简介 | 文档 |
-|------|------|------|
-| **Claude Code Context Rot & Rewind** | Claude Code 团队正式承认 1M 上下文会"腐烂"，25% 开始退化、50% 为拐点，Rewind 是 Thariq 最推荐的应对方案 | [ClaudeCode_context_rot_rewind.md](./DailyAgent/ClaudeCode/ClaudeCode_context_rot_rewind.md) |
-| **Hermes Agent 新手使用十大技巧** | 小红书视频：新安装、主辅模型配置、SOUL.md 定义、记忆机制、通道配置、hermes doctor、UI 接入、一键迁移、技能安装 | [Hermes_Agent_新手使用十大技巧.md](./DailyAgent/Hermes/Hermes_Agent_新手使用十大技巧.md) |
+|:-----|:-----|:-----|
+| MoE_RL 训推不一致 | MoE 做 RL 训练-推理不一致 | [查看](./面筋/RL/MoE_RL_训推不一致.md) |
+| 智元 RL 技术凉经 | RL 后训练面试题 | [查看](./面筋/RL/智元RL技术凉经.md) |
+| GRPO vs SFT 数据差异 | SFT 与 GRPO 数据需求、难度分布 | [查看](./面筋/RL/GRPO_vs_SFT训练数据差异.md) |
+| LLM 面试深度知识点 | 五大模块详解 | [查看](./面筋/LLM/LLM面试深度知识点-五大模块详解.md) |
+| LLM 面试入门知识点 | 入门级知识点 | [查看](./面筋/LLM/LLM面试入门知识点.md) |
+
+---
+
+## 🛠️ DailyAgent
+
+> AI 工具使用技巧 · Agent 工作流 · 效率提升策略
+
+| 主题 | 简介 | 文档 |
+|:-----|:-----|:-----|
+| **Claude Code Context Rot & Rewind** | 1M 上下文会"腐烂"，Rewind 是最佳方案 | [查看](./DailyAgent/ClaudeCode/ClaudeCode_context_rot_rewind.md) |
+| **Hermes Agent 新手使用十大技巧** | 主辅模型配置、SOUL.md、记忆机制 | [查看](./DailyAgent/Hermes/Hermes_Agent_新手使用十大技巧.md) |
+
+---
+
+## 📰 最近更新
+
+| 日期 | 类别 | 简报 |
+|:----:|:----:|:-----|
+| **04-26** 🌟 | ⚙️ CONFIG, 📚 DOCS, 🔬 FM, 🛠️ TOOLS | [FM] MEM文件夹时序融合启示章节大幅扩充：PE编码、时空融合、门控机制完整伪代码 |
+| 04-25 | 🌍 WM, 🔀 MERGE | Merge pull request #7 from zhangcollion/lingbot-va |
+| 04-24 | 🌳 COMMIT, 🎯 RL, 💬 LLM, 🤖 VLA | [VLA] 新增 VLA-JEPA 论文精读报告 |
+
+### 📜 [查看完整日志 `sotafollow.log`](./sotafollow.log)
+
+_自动按天聚合 · emoji风格 · GitHub快捷导航_
+
+---
+
+## 🕐 历史日志
+
+| 月份 | 总结 |
+|:----:|:-----|
+| 2026年4月 | [月度总结](./logs/月度总结_2026年04月.md) |

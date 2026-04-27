@@ -25,6 +25,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ├── FM基础知识/             # 基础模型知识详解
 ├── skills/                # Claude Code 自定义技能
 │   └── self-improving-agent/
+├── tools/                # 工具脚本
+│   ├── sota_logger.py   # 项目日志工具
+│   └── install_hooks.py  # Git Hook 安装脚本
 ├── .learnings/           # 经验记录（自我改进）
 ├── AgentMemResearch/      # (预留目录)
 ├── claudefollow/          # (预留目录)
@@ -158,6 +161,22 @@ git push
 | 消融实验图 | 实验结论 → 消融实验小节 |
 | 定性对比图 | 实验结论 → 定性分析小节 |
 
+**图注要求（必须包含）**：
+
+每张图片插入时必须包含：
+1. **论文原文图注**：使用 `> **图 X：论文原图注**` 格式引用
+2. **图片解释**：对图中关键内容进行中文解释，说明各模块/曲线的含义
+
+**正确格式示例**：
+```markdown
+> **图 2：MemoryVLA 整体架构**（对应论文 Figure 2）
+>
+> ![MemoryVLA 架构](https://arxiv.org/html/2508.19236v1/x2.png)
+>
+> - **左图 (a)**：Cognition-Memory-Action 三模块框架，VLM 编码观察，记忆银行管理历史，扩散动作专家生成动作
+> - **右图 (b)**：Perceptual-Cognitive Memory Bank 的读写机制，检索→融合→整合流程
+```
+
 arXiv HTML 图片 URL 格式：`https://arxiv.org/html/{paper_id}v{version}/{xN}.png`
 
 **非 arXiv 论文（如项目主页）插图方法：**
@@ -281,3 +300,173 @@ arXiv HTML 图片 URL 格式：`https://arxiv.org/html/{paper_id}v{version}/{xN}
 ```
 
 强成功标准让你能独立循环。弱标准（"让它工作"）需要不断确认。
+
+## 自我改进学习（Self-Improvement）
+
+项目使用 `.learnings/` 目录记录经验教训，用于持续改进。
+
+### 学习文件
+
+| 文件 | 用途 | 触发场景 |
+|------|------|----------|
+| `.learnings/LEARNINGS.md` | 经验、纠正、最佳实践 | 用户纠正、发现更好方法、知识差距 |
+| `.learnings/ERRORS.md` | 命令/操作失败记录 | 命令返回非零退出码、异常、超时 |
+| `.learnings/FEATURE_REQUESTS.md` | 用户请求的功能 | "能不能加一个..."、"希望可以..." |
+
+### 日志格式
+
+**Learning 条目**：
+```markdown
+## [LRN-YYYYMMDD-XXX] category
+
+**Priority**: low | medium | high | critical
+**Status**: pending | resolved | promoted
+
+### Summary
+一句话描述学到了什么
+
+### Details
+完整上下文：发生了什么、哪里错了、正确答案是什么
+
+### Suggested Action
+具体的修复或改进建议
+
+---
+```
+
+**Error 条目**：
+```markdown
+## [ERR-YYYYMMDD-XXX] skill_or_command_name
+
+**Priority**: high
+**Status**: pending
+
+### Error
+```
+实际错误信息
+```
+
+### Context
+命令/操作尝试了什么、使用的输入或参数
+
+### Suggested Fix
+如果能识别，给出可能的修复方案
+
+---
+```
+
+### 提升到 CLAUDE.md
+
+当学习具有广泛适用性时，提升到项目永久记忆：
+
+| 学习类型 | 提升目标 |
+|----------|----------|
+| 行为模式 | `SOUL.md` |
+| 工作流改进 | `AGENTS.md` |
+| 工具技巧 | `TOOLS.md` |
+| 项目规范/约定 | `CLAUDE.md` |
+
+**提升标准**：
+- `Recurrence-Count >= 3`（跨至少 2 个不同任务）
+- 30 天内出现
+- 不是一次性问题
+
+### 检测触发词
+
+**纠正**（→ category: correction）：
+- "不对..."、"错了..."、"实际上应该是..."
+- "你搞错了..."
+- "这个信息过时了..."
+
+**功能请求**（→ feature request）：
+- "能不能也..."
+- "要是能...就好了"
+- "有没有办法..."
+
+**知识差距**（→ category: knowledge_gap）：
+- 用户提供了你不知道的信息
+- 引用的文档已过时
+- API 行为与理解不符
+
+### 优先级指南
+
+| 优先级 | 使用场景 |
+|--------|----------|
+| `critical` | 阻塞核心功能、数据丢失风险、安全问题 |
+| `high` | 重大影响、影响常见工作流、 recurring 问题 |
+| `medium` | 中等影响、有 workaround |
+| `low` | 小麻烦、边缘情况、可选改进 |
+
+### 最佳实践
+
+1. **立即记录** - 上下文在问题发生后最清晰
+2. **具体描述** - 未来的自己需要能快速理解
+3. **包含复现步骤** - 特别是错误
+4. **关联文件** - 让修复更容易
+5. **给出具体建议** - 不要只写"调查一下"
+6. **定期审查** - 陈旧的学习会失去价值
+
+## SotaLogger 日志工具
+
+项目使用 `tools/sota_logger.py` 记录所有更新日志。
+
+### 安装 Git Hook
+
+```bash
+python3 tools/install_hooks.py
+```
+
+安装后，每次 `git commit` 会自动记录到 `sotafollow.log`。
+
+### 命令行用法
+
+```bash
+# 记录 commit
+python3 tools/sota_logger.py commit "更新 VISTA 精读报告"
+
+# 记录精读报告
+python3 tools/sota_logger.py report "VISTA_精读报告.md" created "arXiv 2602.10983"
+python3 tools/sota_logger.py report "VISTA_精读报告.md" updated
+python3 tools/sota_logger.py report "VISTA_精读报告.md" optimized
+
+# 记录 PR merge
+python3 tools/sota_logger.py pr 42 "VISTA: 世界模型生成视觉子目标" "核心：层次化VLA架构"
+
+# 记录通用操作
+python3 tools/sota_logger.py operation "新增论文" "VISTA (arXiv 2602.10983)"
+
+# 查看日志
+python3 tools/sota_logger.py view 50
+tail -f sotafollow.log
+```
+
+### Python API
+
+```python
+from tools.sota_logger import SotaLogger
+
+logger = SotaLogger()
+logger.log_commit("更新 π0.7 精读报告", ["VLA/π0.7_精读报告.md"])
+logger.log_reading_report("VISTA_精读报告.md", "created", "arXiv 2602.10983")
+logger.log_operation("代码审查", "FlowGRPO 格式修复完成")
+```
+
+### 日志格式示例
+
+```
+📅 2026-04-22 ⏰ 14:32:15 🌳 [COMMIT]
+   📝 更新 π0.7 精读报告
+   🤖 VLA: VLA/π0.7_精读报告.md
+   └── 👤 Irving
+
+📅 2026-04-22 ⏰ 14:35:00 ✨ [READING REPORT] CREATED
+   📄 VISTA_精读报告.md
+   🏛️ arXiv 2602.10983
+   └── 🤖 Auto-logged by SotaLogger
+```
+
+### 日志文件
+
+- 位置：`./sotafollow.log`（项目根目录）
+- 轮转：文件达到 10MB 时自动轮转，保留最近 5 个文件
+
