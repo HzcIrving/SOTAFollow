@@ -75,7 +75,123 @@
     "WorldModel/MV-VDP_精读报告.md": {
       "interview_date": "20260427",
       "processed_at": "2026-04-27T08:04:53.271671"
+    },
+    "VLA/MemoryVLA_论文精读-arXiv2508.19236.md": {
+      "interview_date": "20260428",
+      "processed_at": "2026-04-28T08:01:00.000000"
+    },
+    "VLA/Vega_精读报告.md": {
+      "interview_date": "20260428",
+      "processed_at": "2026-04-28T08:01:00.000001"
+    },
+    "VLA/Actuate2025_SergeyLevine_精读报告.md": {
+      "interview_date": "20260428",
+      "processed_at": "2026-04-28T08:01:00.000002"
+    },
+    "WorldModel/Uni-World_VLA-论文精读-ECCV2026.md": {
+      "interview_date": "20260428",
+      "processed_at": "2026-04-28T08:01:00.000003"
+    },
+    "WorldModel/LingBot-VA_精读报告.md": {
+      "interview_date": "20260428",
+      "processed_at": "2026-04-28T08:01:00.000004"
+    },
+    "WorldModel/imge_tokenizer技术详解.md": {
+      "interview_date": "20260428",
+      "processed_at": "2026-04-28T08:01:00.000005"
+    },
+    "FM基础知识/TiTok-论文精读-arXiv2406.07550.md": {
+      "interview_date": "20260428",
+      "processed_at": "2026-04-28T08:01:00.000006"
+    },
+    "FM基础知识/mRoPE-多维旋转位置编码详解.md": {
+      "interview_date": "20260428",
+      "processed_at": "2026-04-28T08:01:00.000007"
+    },
+    "FM基础知识/WorldModel训练Loss设计详解.md": {
+      "interview_date": "20260428",
+      "processed_at": "2026-04-28T08:01:00.000008"
+    },
+    "VLA/DVGT-2_精读报告.md": {
+      "interview_date": "20260429",
+      "processed_at": "2026-04-29T08:01:00.000000"
+    },
+    "WorldModel/从表征学习角度看_Being-H0.7_Fast-WAM与π0.7.md": {
+      "interview_date": "20260429",
+      "processed_at": "2026-04-29T08:01:00.000000"
+    },
+    "FM基础知识/LoRA-论文精读-arXiv2106.09685.md": {
+      "interview_date": "20260429",
+      "processed_at": "2026-04-29T08:01:00.000000"
+    },
+    "FM基础知识/FlashAttention2-论文精读-arXiv2307.08691.md": {
+      "interview_date": "20260429",
+      "processed_at": "2026-04-29T08:01:00.000000"
+    },
+    "FM基础知识/Kimi_Attention_Residuals_精读报告.md": {
+      "interview_date": "20260429",
+      "processed_at": "2026-04-29T08:01:00.000000"
+    },
+    "FM基础知识/PETR-论文精读.md": {
+      "interview_date": "20260429",
+      "processed_at": "2026-04-29T08:01:00.000000"
+    },
+    "FM基础知识/ZeRO-论文精读-sc20.md": {
+      "interview_date": "20260429",
+      "processed_at": "2026-04-29T08:01:00.000000"
+    },
+    "WorldModel/世界模型EP04_Motus_石麻笔记.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:14.566486"
+    },
+    "WorldModel/世界模型_视频笔记_硅谷101.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:14.566495"
+    },
+    "FM基础知识/PETR V2-论文精读.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:14.566496"
+    },
+    "FM基础知识/SwiftVGGT_精读报告.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:14.566497"
+    },
+    "FM基础知识/VGGT-论文精读-arXiv2503.11651.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:14.566498"
+    },
+    "FM基础知识/WorldModel-VLA自回归框架详解.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:14.566499"
+    },
+    "FM基础知识/VQVAE视觉Tokenizer详解.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:14.566500"
+    },
+    "FM基础知识/RoPE及3DPE技术详解.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:14.566502"
+    },
+    "FM基础知识/大模型Roadmap.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:14.566504"
+    },
+    "FM基础知识/流式三维重建-几何上下文Transformer-精读报告.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:28.851012"
+    },
+    "FM基础知识/DCT（离散余弦变换）详解.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:28.851020"
+    },
+    "FM基础知识/MEM/MemoryVLA_精读报告.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:28.851022"
+    },
+    "FM基础知识/MEM/GMP_精读报告.md": {
+      "interview_date": "20260430",
+      "processed_at": "2026-04-30T08:05:28.851023"
     }
   },
-  "last_run": "20260427"
+  "last_run": "20260430"
 }
